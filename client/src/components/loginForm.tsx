@@ -1,11 +1,12 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
+// import Image from "next/image";
+// import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import login from "@/assets/img/login.jpg";
+import { Link } from "react-router-dom";
 
 export default function LoginForm({ onLogin }: { onLogin: () => void }) {
   return (
@@ -32,7 +33,7 @@ export default function LoginForm({ onLogin }: { onLogin: () => void }) {
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
                 <Link
-                  href="/forgot-password"
+                  to="/auth/forgot-password"
                   className="ml-auto inline-block text-sm underline"
                 >
                   Forgot your password?
@@ -49,14 +50,14 @@ export default function LoginForm({ onLogin }: { onLogin: () => void }) {
           </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="underline">
+            <Link to="/auth/signup" className="underline">
               Sign up
             </Link>
           </div>
         </div>
       </div>
       <div className="hidden bg-muted lg:block">
-        <Image
+        <img
           src={login}
           alt="Image"
           width="1920"

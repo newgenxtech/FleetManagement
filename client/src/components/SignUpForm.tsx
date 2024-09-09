@@ -1,14 +1,13 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import login from "@/assets/img/login.jpg";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 export function SignUpForm() {
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px] fade-in-15">
       <div className="hidden bg-muted lg:block">
-        <Image
+        <img
           src={login}
           alt="Image"
           width="1920"
@@ -48,7 +47,7 @@ export function SignUpForm() {
           </Button>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
-            <Link href="/login" className="underline">
+            <Link to="/auth/login" className="underline">
               Login
             </Link>
           </div>

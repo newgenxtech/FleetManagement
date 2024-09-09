@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import { Link } from "react-router-dom"
 import { ChevronRight, Search, type LucideIcon } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -51,7 +51,7 @@ export function NavMain({
           <li>
             <div className="relative flex items-center">
               <Link
-                href={item.url}
+                to={item.url}
                 className="min-w-8 flex h-8 flex-1 items-center gap-2 overflow-hidden rounded-md px-1.5 text-sm font-medium outline-none ring-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:ring-2"
               >
                 <item.icon className="h-4 w-4 shrink-0" />
@@ -74,7 +74,7 @@ export function NavMain({
                 {item.items?.map((subItem) => (
                   <li key={subItem.title}>
                     <Link
-                      href={subItem.url}
+                      to={subItem.url}
                       className="min-w-8 flex h-8 items-center gap-2 overflow-hidden rounded-md px-2 text-sm font-medium text-muted-foreground ring-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:ring-2"
                     >
                       <div className="line-clamp-1">{subItem.title}</div>
@@ -123,7 +123,7 @@ function SidebarSearch({
           <div className="grid gap-1 p-1.5 text-sm">
             {results.map((result) => (
               <Link
-                href={result.url}
+                to={result.url}
                 key={result.title}
                 className="rounded-md p-2.5 outline-none ring-ring hover:bg-accent hover:text-accent-foreground focus-visible:ring-2"
               >
@@ -135,7 +135,7 @@ function SidebarSearch({
             ))}
             <Separator className="my-1.5" />
             <Link
-              href="#"
+              to="#"
               className="rounded-md px-2.5 py-1 text-muted-foreground outline-none ring-ring hover:text-foreground focus-visible:ring-2"
             >
               See all results
@@ -172,7 +172,7 @@ function SidebarSearch({
         <div className="grid gap-1 p-1.5 text-sm">
           {results.map((result) => (
             <Link
-              href={result.url}
+              to={result.url}
               key={result.title}
               className="rounded-md p-2.5 outline-none ring-ring hover:bg-accent hover:text-accent-foreground focus-visible:ring-2"
             >
@@ -184,7 +184,7 @@ function SidebarSearch({
           ))}
           <Separator className="my-1.5" />
           <Link
-            href="#"
+            to="#"
             className="rounded-md px-2.5 py-1 text-muted-foreground outline-none ring-ring hover:text-foreground focus-visible:ring-2"
           >
             See all results
