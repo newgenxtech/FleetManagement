@@ -1,18 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class User {
-
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
-    @Column()
-    firstName: string
+    @Column({ type: 'varchar', length: 255, unique: true })
+    email: string;
 
-    @Column()
-    lastName: string
+    @Column({ type: 'varchar', length: 255 })
+    password: string;
 
-    @Column()
-    age: number
+    @Column({ type: 'varchar', length: 255 })
+    firstName: string;
 
+    @Column({ type: 'varchar', length: 255 })
+    lastName: string;
+
+    @Column({ type: 'int', nullable: true }) // Allowing null values for age
+    age?: number;
 }

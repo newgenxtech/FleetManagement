@@ -18,7 +18,7 @@ export const AppDataSource = new DataSource({
     entities: [User],
     migrations: [],
     subscribers: [],
-    url: `postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?sslmode=require`,
+    url: `postgresql://wewill_owner:zKScdvhqPw65@ep-black-smoke-a54gcc1h.us-east-2.aws.neon.tech/wewill?sslmode=require`,
 })
 
 
