@@ -1,62 +1,83 @@
-import { userRepository} from "../repos/userRepository";
-import { User } from "../entity/User"; 
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../Utilis/jwt";
+import { userRepository } from "../repos/userRepository";
+import { User } from "../entity/User";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from "../Utilis/jwt";
 
-import * as bcrypt from 'bcrypt';
-export const login = async (email: string, password: string) => {
-    const user = await userRepository.findOneBy({ email });
+import * as bcrypt from "bcrypt";
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-        throw new Error('Invalid email or password');
-    }
+import { Request, Response } from "express";
+import { ApiResponse } from "../Utilis/ApiResponse/apiresponse";
+import { apiHandlerWrapper } from "../Utilis/Wrappers/apiWrapper";
 
-    // Generate tokens
-    const accessToken = generateAccessToken(user.id,user.email);
-    const refreshToken = generateRefreshToken(user.id,user.email);
-    const userdetials = user.id
-    // Store refreshToken in the database or in-memory storage (optional)
+export const login = apiHandlerWrapper(async (req: Request, res: Response) => {
+  const { email, password } = req.body;
 
-    return { accessToken, refreshToken,userdetials };
-};
+  const user = await userRepository.findOneBy({ email });
 
-export const refreshToken = async (token: string) => {
-    try {
-        const payload = verifyRefreshToken(token);
-        const newAccessToken = generateAccessToken(payload.userId,payload.email);
-        return { accessToken: newAccessToken };
-    } catch (error) {
-        throw new Error('Invalid refresh token');
-    }
-};
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    throw new Error("Invalid email or password");
+  }
+  // Generate tokens
 
-export const logout = async (userId: number) => {
-    // Optional: Remove the refresh token from the database/in-memory store
-};
-export const signup = async (email: string, password: string, firstName: string, lastName: string,age:number) => {
-    const existingUser = await userRepository.findOneBy({ email });
+  const accessToken = generateAccessToken(user.id, user.email);
+  const refreshToken = generateRefreshToken(user.id, user.email);
+  const userdetials = user.id;
+  return ApiResponse.successResponseWithData(res, "Login Successful", {
+    accessToken,
+    refreshToken,
+    userdetials,
+  });
+});
+// Store refreshToken in the database or in-memory storage (optional)
 
-    if (existingUser) {
-        throw new Error('Email is already in use');
-    }
+export const refreshTokenGenerate = apiHandlerWrapper(
+  async (req: Request, res: Response) => {
+    const { refreshToken } = req.body;
+    console.log("refreshToken", refreshToken);
+    const payload = verifyRefreshToken(refreshToken);
+    console.log("refreshToken1", refreshToken);
+    const newAccessToken = generateAccessToken(payload.userId, payload.email);
+    console.log("refreshToken2", refreshToken);
+    return ApiResponse.successResponseWithData(res, "Token Refreshed", {
+      accessToken: newAccessToken,
+    });
+  }
+);
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+export const signup = apiHandlerWrapper(async (req: Request, res: Response) => {
+  const { email, password, firstName, lastName, age } = req.body;
+  console.log("email", email);
 
-    // Create a new user
-    const newUser = new User();
-    newUser.email = email;
-    newUser.password = hashedPassword;
-    newUser.firstName = firstName;
-    newUser.lastName = lastName;
-    newUser.age = age;
-    // Save the user in the database
-    await userRepository.save(newUser);
-    console.log("entering")
-    console.log("newUser.id",newUser.id)
-    // Generate access and refresh tokens
-    const accessToken = generateAccessToken(newUser.id,newUser.email);
-    const refreshToken = generateRefreshToken(newUser.id,newUser.email);
-    const userdetials = newUser.id
+  const existingUser = await userRepository.findOneBy({ email });
 
-    return { accessToken, refreshToken,userdetials };
-};
+  if (existingUser) {
+    throw new Error("User already exists");
+  }
+
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Create a new user
+  const newUser = new User();
+  newUser.email = email;
+  newUser.password = hashedPassword;
+  newUser.firstName = firstName;
+  newUser.lastName = lastName;
+  newUser.age = age;
+  // Save the user in the database
+  await userRepository.save(newUser);
+
+  // Generate access and refresh tokens
+  const accessToken = generateAccessToken(newUser.id, newUser.email);
+  const refreshToken = generateRefreshToken(newUser.id, newUser.email);
+  const userdetials = newUser.id;
+
+  return ApiResponse.successResponseWithData(res, "User created", {
+    accessToken,
+    refreshToken,
+    userdetials,
+  });
+});
