@@ -9,6 +9,7 @@ import BaseLayout from "./layouts/BaseLayout";
 import Login from "./view/login/Login";
 import ForgetPassword from "./components/ForgotPassword";
 import SignUpPage from "./view/signup/page";
+import Driver from "./view/Master pages/Driver";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<BaseLayout />}>
-            <Route index element={<Dashboard />} />
+            {/* <Route index element={<Dashboard />} /> */}
+            <Route path="/master/driver" element={<Driver />} />
           </Route>
           <Route path="auth" element={<AuthLayout />}>
             <Route index element={<Login />} />

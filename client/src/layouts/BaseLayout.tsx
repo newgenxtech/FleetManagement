@@ -1,43 +1,36 @@
-import "@/index.css";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarLayout, SidebarTrigger } from "@/components/ui/sidebar";
+import React from "react";
+import { Sidebar, SidebarBody, SidebarLink } from "../components/ui/sidebar";
 import { Outlet } from "react-router-dom";
+import { links,Logo,LogoIcon } from "../components/ui/sidebar";
 
-export default function RootLayout(
-    //     {
-    //     children,
-    // }: Readonly<{
-    //     children: React.ReactNode;
-    // }>
-) {
-    const sidebarOpen = true;
+export const BaseLayout: React.FC = () => {
 
 
-    return (
-        <html lang="en">
-            <body
-                // font-geist-sans  //! this font can also be used
-                className="font-geist-mono antialiased bg-white"
-            >
-                <SidebarLayout
-                    defaultOpen={
-                        // if route is login or forgot password or sign up
-                        // then render the children
-                        // else render the sidebar layout
-                        sidebarOpen
-                    }
-                >
-                    <AppSidebar />
-                    <main className="flex flex-1 flex-col p-2 transition-all duration-300 ease-in-out">
-                        <div className="h-full">
-                            <SidebarTrigger />
-                            {/* {children} */}
-                            <Outlet />
-                        </div>
-                    </main>
-                </SidebarLayout>
-                {/* )} */}
-            </body>
-        </html>
-    );
-}
+  return (
+    <div className="flex h-screen w-full">
+      {/* Sidebar */}
+      <Sidebar animate={true}>
+        <SidebarBody className="justify-between gap-10">
+          <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+            <>
+              <Logo />
+            </>
+            <div className="mt-8 flex flex-col gap-2">
+              {links.map((link, idx) => (
+                <SidebarLink key={idx} link={link} />
+              ))}
+            </div>
+            {/* <LogoIcon /> */}
+          </div>
+        </SidebarBody>
+      </Sidebar>
+
+      {/* Main content */}
+      <div className="flex-1 p-4 bg-gray-50 dark:bg-gray-900">
+        <Outlet /> {/* Render the child routes here */}
+      </div>
+    </div>
+  );
+};
+
+export default BaseLayout;
