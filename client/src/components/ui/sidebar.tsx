@@ -269,7 +269,7 @@ export const links = [
       },
       {
         label: "Customers",
-        href: "/master/customers",
+        href: "/master/customer",
       },
       {
         label: "Procurement",
