@@ -1,43 +1,169 @@
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
+import '@/styles/WarehouseListPage.css';
+import SearchComponent from "@/components/SearchComponent";
+import TableComponent from "@/components/ui/TableComponents";
+import { useDispatch, useSelector } from "react-redux";
+import { WareHouseData, WarehouseDataStoreInterface } from "@/Interfaces/interface";
+import { Link } from "react-router-dom";
+import sortIcon from "@/assets/icons8-sort-30.png";
+import { resetFilter, UpdateFilteredData, updatePagination, updateSort } from '@/services/warehouse/warehouseSlice';
+import FilterIcon from '@/assets/icons8-filter-96.png';
+import { useCallback } from 'react';
+import { trimAndConvertToNumber } from '@/utils/utils';
 
-  import React from "react"
 
-  
-  const Driver: React.FC = () => {
+const Driver = () => {
+    const StoreData = useSelector((state: { warehouse: WarehouseDataStoreInterface }) => state.warehouse);
+    const dispatch = useDispatch();
+
+
+
+    const handleSearch = useCallback((data: string) => {
+        console.log(data);
+        const searchTerm = data.toLowerCase();
+
+        const filteredData = StoreData.data.filter((row: WareHouseData) => {
+            return Object.values(row).some((value) => {
+                if (typeof value === 'string') {
+                    return value.toLowerCase().includes(searchTerm);
+                } else if (typeof value === 'number') {
+                    return value.toString().includes(searchTerm);
+                }
+                return false;
+            });
+        });
+
+        console.log(filteredData);
+        if (filteredData.length === 0) {
+            // alert('No Data Found');
+        } else {
+            dispatch(UpdateFilteredData(filteredData));
+        }
+    }, [StoreData.data, dispatch]);
     return (
-        <div>
-            <h1 style={{paddingTop:"20px",}}>Driver Master</h1>
-            <div>
-                <Table>
-                    <TableCaption></TableCaption>
-                    <TableHeader>
-                        <TableRow>
-                        <TableHead className="w-[100px]">Name</TableHead>
-                        <TableHead>Contact</TableHead>
-                        <TableHead>Address</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        <TableRow>
-                        <TableCell className="font-medium">INV001</TableCell>
-                        <TableCell>Paid</TableCell>
-                        <TableCell>Credit Card</TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table> 
+        <div className='warehouse'>
+            <div className="container">
+                <label className="label">Driver Master</label>
+                <SearchComponent
+                    className="search-component"
+                    placeholder="Search Driver"
+                    onHandleChange={handleSearch}
+                    postfix={<i className="fa fa-search" />}
+                />
             </div>
-        </div>
-    )
-  }
+            <div>
 
-  export default Driver
+                <div className="filter-section">
+                    <div className="filter-header">
+                        <div className='filter-icon-container'>
+                            <img src={FilterIcon} alt="filter" className='filterIcon' />
+                            <span className="filter-title">Filters</span>
+                        </div>
+                        {
+                            StoreData.filterData.length > 0 && StoreData.sortColumn &&
+                            (
 
+                                <button
+                                    onClick={() => {
+                                        dispatch(UpdateFilteredData([]));
+                                        dispatch(resetFilter());
+                                    }}
+                                    className="clear-filter-button"
+                                >
+                                    Clear Filter
+                                </button>
+                            )
+                        }
+                    </div>
 
+                    {
+                        StoreData.filterData.length > 0 && (
+
+                            StoreData.sortColumn && (
+                                <div className="sort-info">
+                                    <span>Sort By: <strong>{StoreData.sortColumn}</strong></span>
+                                    <span>Sort Direction: <strong>{StoreData.sortDirection}</strong></span>
+                                </div>
+                            )
+
+                        )
+                    }
+                </div>
+
+            </div>
+
+            <TableComponent
+                columns={[
+                    {
+                        // label: 'Name',
+                        label: (
+                            <div className="sortable-icon-container">
+                                <span>Name</span>
+                                <img
+                                    src={sortIcon}
+                                    alt="sort"
+                                    className={'sortable-icon'}
+                                />
+                            </div>
+                        ),
+                        key: 'name',
+                        render: (data: Partial<WareHouseData>) => (
+                            <Link to={`/warehouse/${data.code}`} className="link" >
+                                {data.name}
+                            </Link>
+                        ),
+                        sortable: true,
+                        onSort: (columnKey: string) => {
+                            dispatch(updateSort({
+                                sortColumn: columnKey,
+                                sortDirection: StoreData.sortDirection === 'asc' ? 'desc' : 'asc'
+                            }));
+                            // Warehouse-2205
+
+                            const sortedData = [...StoreData.data].sort((a, b) => {
+                                const numA = trimAndConvertToNumber(a.name, 'Warehouse-', '');
+                                const numB = trimAndConvertToNumber(b.name, 'Warehouse-', '');
+
+                                if (StoreData.sortDirection === 'asc') {
+                                    return numA - numB;
+                                } else {
+                                    return numB - numA;
+                                }
+                            });
+                            dispatch(UpdateFilteredData(sortedData));
+                        }
+                    },
+                    {
+                        label: 'Contact',
+                        key: 'Contact',
+                        render: (data: Partial<WareHouseData>) => {
+                            return <span>{data.type}</span>;
+                        }
+                    },
+                    {
+                        label: 'Address',
+                        key: 'Address',
+                        render: (data: Partial<WareHouseData>) => {
+                            return <span>{data.city}</span>;
+                        }
+                    },
+                ]}
+                data={
+                    StoreData.filterData.length > 0 ? StoreData.filterData : StoreData.data
+                }
+                pagination={
+                    {
+                        currentPage: StoreData.currentPage,
+                        rowsPerPage: StoreData.rowsPerPage,
+                    }
+                }
+                setPagination={
+                    (data: { currentPage: number, rowsPerPage: number }) => {
+                        dispatch(updatePagination(data));
+                    }
+                }
+            />
+        </div >
+    );
+};
+
+export default Driver;

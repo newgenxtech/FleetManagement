@@ -1,0 +1,126 @@
+.warehouse{
+    padding: 1rem;
+}
+
+@media only screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        gap: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-component {
+        width: 'fit-content';
+    }
+}
+
+.label {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+/* absolute left-2 top-2.5 h-4 w-4 text-gray-500 */
+
+@media only screen and (min-width: 768px) {
+    .container {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        gap: 6rem;
+    }
+    .search-component {
+        background-color: #EDEDF3;
+        width: 40%;
+        padding: 10px;
+        border-radius: 4px;
+        border: none;
+        color: #6B7280;
+        font-family: Montserrat;
+        font-size: 1rem;
+        font-weight: 500;
+        outline: none;
+    }
+}
+
+
+.link {
+    color: darkblue;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.sortable-icon-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sortable-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.sortable-icon-rotated {
+    width: 16px;
+    height: 16px;
+    transform: rotate(180deg);
+}
+
+
+
+.filter-section {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.filter-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.clear-filter-button {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.clear-filter-button:hover {
+    background-color: #ff7875;
+}
+
+.sort-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+}
+
+.sort-info span {
+    margin-right: 16px;
+}
+
+.filterIcon{
+    width: 1.5rem;
+}
+
+.filter-icon-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

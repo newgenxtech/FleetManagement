@@ -11,7 +11,7 @@ import { useCallback } from 'react';
 import { trimAndConvertToNumber } from '@/utils/utils';
 
 
-const Vehicle = () => {
+const Customer = () => {
     const StoreData = useSelector((state: { warehouse: WarehouseDataStoreInterface }) => state.warehouse);
     const dispatch = useDispatch();
 
@@ -42,7 +42,7 @@ const Vehicle = () => {
     return (
         <div className='warehouse'>
             <div className="container">
-                <label className="label">Vehicle Master</label>
+                <label className="label">Customer Master</label>
                 <SearchComponent
                     className="search-component"
                     placeholder="Search Driver"
@@ -97,7 +97,7 @@ const Vehicle = () => {
                         // label: 'Name',
                         label: (
                             <div className="sortable-icon-container">
-                                <span>Vehicle Name</span>
+                                <span>Name</span>
                                 <img
                                     src={sortIcon}
                                     alt="sort"
@@ -130,13 +130,36 @@ const Vehicle = () => {
                                 }
                             });
                             dispatch(UpdateFilteredData(sortedData));
+                        }
+                    },
+
+
+                    {
+                        label: 'Address',
+                        key: 'Address',
+                        render: (data: Partial<WareHouseData>) => {
+                            return <span>{data.type}</span>;
+                        }
+                    },
+                    {
+                        label: 'Contact',
+                        key: 'Contact',
+                        render: (data: Partial<WareHouseData>) => {
+                            return <span>{data.city}</span>;
+                        }
+                    },
+                    {
+                        label: 'Gst',
+                        key: 'Gst',
+                        render: (data: Partial<WareHouseData>) => {
+                            return <span>{data.city}</span>;
                         }
                     },
                     {
                         // label: 'Name',
                         label: (
                             <div className="sortable-icon-container">
-                                <span>Vehicle Type</span>
+                                <span>Company</span>
                                 <img
                                     src={sortIcon}
                                     alt="sort"
@@ -171,98 +194,6 @@ const Vehicle = () => {
                             dispatch(UpdateFilteredData(sortedData));
                         }
                     },
-                    {
-                        // label: 'Name',
-                        label: (
-                            <div className="sortable-icon-container">
-                                <span>Vehicle Number</span>
-                                <img
-                                    src={sortIcon}
-                                    alt="sort"
-                                    className={'sortable-icon'}
-                                />
-                            </div>
-                        ),
-                        key: 'name',
-                        render: (data: Partial<WareHouseData>) => (
-                            <Link to={`/warehouse/${data.code}`} className="link" >
-                                {data.name}
-                            </Link>
-                        ),
-                        sortable: true,
-                        onSort: (columnKey: string) => {
-                            dispatch(updateSort({
-                                sortColumn: columnKey,
-                                sortDirection: StoreData.sortDirection === 'asc' ? 'desc' : 'asc'
-                            }));
-                            // Warehouse-2205
-
-                            const sortedData = [...StoreData.data].sort((a, b) => {
-                                const numA = trimAndConvertToNumber(a.name, 'Warehouse-', '');
-                                const numB = trimAndConvertToNumber(b.name, 'Warehouse-', '');
-
-                                if (StoreData.sortDirection === 'asc') {
-                                    return numA - numB;
-                                } else {
-                                    return numB - numA;
-                                }
-                            });
-                            dispatch(UpdateFilteredData(sortedData));
-                        }
-                    },
-                    {
-                        // label: 'Name',
-                        label: (
-                            <div className="sortable-icon-container">
-                                <span>Chassis Number</span>
-                                <img
-                                    src={sortIcon}
-                                    alt="sort"
-                                    className={'sortable-icon'}
-                                />
-                            </div>
-                        ),
-                        key: 'name',
-                        render: (data: Partial<WareHouseData>) => (
-                            <Link to={`/warehouse/${data.code}`} className="link" >
-                                {data.name}
-                            </Link>
-                        ),
-                        sortable: true,
-                        onSort: (columnKey: string) => {
-                            dispatch(updateSort({
-                                sortColumn: columnKey,
-                                sortDirection: StoreData.sortDirection === 'asc' ? 'desc' : 'asc'
-                            }));
-                            // Warehouse-2205
-
-                            const sortedData = [...StoreData.data].sort((a, b) => {
-                                const numA = trimAndConvertToNumber(a.name, 'Warehouse-', '');
-                                const numB = trimAndConvertToNumber(b.name, 'Warehouse-', '');
-
-                                if (StoreData.sortDirection === 'asc') {
-                                    return numA - numB;
-                                } else {
-                                    return numB - numA;
-                                }
-                            });
-                            dispatch(UpdateFilteredData(sortedData));
-                        }
-                    },
-                    // {
-                    //     label: '',
-                    //     key: 'Vehicle Type',
-                    //     render: (data: Partial<WareHouseData>) => {
-                    //         return <span>{data.type}</span>;
-                    //     }
-                    // },
-                    // {
-                    //     label: 'Address',
-                    //     key: 'Address',
-                    //     render: (data: Partial<WareHouseData>) => {
-                    //         return <span>{data.city}</span>;
-                    //     }
-                    // },
                 ]}
                 data={
                     StoreData.filterData.length > 0 ? StoreData.filterData : StoreData.data
@@ -283,4 +214,4 @@ const Vehicle = () => {
     );
 };
 
-export default Vehicle;
+export default Customer;
