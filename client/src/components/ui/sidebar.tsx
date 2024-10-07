@@ -1,17 +1,18 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Link, LinkProps } from "react-router-dom";
+import { NavLink,Link,LinkProps } from "react-router-dom";
 
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
+
 import {
-  IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
-  IconHierarchy,
-} from "@tabler/icons-react";
+  LayoutDashboard,
+  User,
+  Settings,
+  Network,
+  LogOut,ChevronDown, ChevronRight,
+} from "lucide-react";
 
 interface Links {
   label: string;
@@ -98,11 +99,11 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "h-full px-4 py-4 hidden  md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[300px] flex-shrink-0",
+          "h-full px-2 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[250px] flex-shrink-0 bg-white shadow-lg",
           className
         )}
         animate={{
-          width: animate ? (open ? "300px" : "60px") : "300px",
+          width: animate ? (open ? "250px" : "60px") : "250px",
         }}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -113,6 +114,7 @@ export const DesktopSidebar = ({
     </>
   );
 };
+
 
 export const MobileSidebar = ({
   className,
@@ -164,6 +166,7 @@ export const MobileSidebar = ({
   );
 };
 
+
 export const SidebarLink = ({
   link,
   className,
@@ -176,50 +179,81 @@ export const SidebarLink = ({
   const { open, animate } = useSidebar();
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
-  const handleMasterClick = () => {
-    if (link.submenu) {
-      setIsSubMenuOpen(!isSubMenuOpen);
-    }
+  const toggleSubMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsSubMenuOpen((prev) => !prev); // Toggle the submenu on arrow click
   };
 
   return (
     <>
-      <Link
+      <NavLink
         to={link.href || "#"}
-        className={cn(
-          "flex items-center justify-start gap-2 group/sidebar py-2",
-          className
-        )}
-        onClick={handleMasterClick}
+        className={({ isActive }) =>
+          cn(
+            "flex items-center justify-start gap-4 py-2 px-3 rounded-lg transition-all duration-200",
+            className,
+            isActive
+              ? "bg-blue-600 text-white border-blue-500 shadow-sm"
+              : "text-neutral-700 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-700"
+          )
+        }
         {...props}
       >
-        {link.icon}
-        <motion.span
-          animate={{
-            display: animate ? (open ? "inline-block" : "none") : "inline-block",
-            opacity: animate ? (open ? 1 : 0) : 1,
-          }}
-          className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+        <div className="flex items-center">
+          {link.icon}
+          <motion.span
+            animate={{
+              display: animate ? (open ? "inline-block" : "none") : "inline-block",
+              opacity: animate ? (open ? 1 : 0) : 1,
+            }}
+            className="text-sm font-medium transition-all whitespace-pre ml-2" // Added margin between icon and label
+          >
+            {link.label}
+          </motion.span>
+        </div>
+
+        {/* Add arrow icon for submenu toggle */}
+        {link.submenu && (
+          <button
+            className="ml-auto text-neutral-500 hover:text-neutral-700 dark:text-neutral-200 dark:hover:text-neutral-100"
+            onClick={toggleSubMenu}
+          >
+            {isSubMenuOpen ? <ChevronDown /> : <ChevronRight />} {/* Change icon based on state */}
+          </button>
+        )}
+      </NavLink>
+
+      {/* Submenu for 'Master' */}
+      {isSubMenuOpen && link.submenu && (
+        <motion.div
+          className="ml-8 mt-2"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          transition={{ duration: 0.2 }}
         >
-          {link.label}
-        </motion.span>
-      </Link>
-      {isSubMenuOpen && link.submenu && open && (
-        <div className="ml-6">
           {link.submenu.map((sublink, idx) => (
-            <Link
+            <NavLink
               key={idx}
               to={sublink.href}
-              className="flex items-center py-1 text-neutral-500 dark:text-neutral-400 text-sm"
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center py-2 px-4 text-sm rounded-lg transition-all duration-200",
+                  isActive
+                    ? "bg-blue-500 text-white shadow"
+                    : "text-neutral-600 dark:text-neutral-300 hover:bg-gray-200 dark:hover:bg-neutral-700"
+                )
+              }
             >
               {sublink.label}
-            </Link>
+            </NavLink>
           ))}
-        </div>
+        </motion.div>
       )}
     </>
   );
 };
+
+
 
 // Update your Links type to include the submenu
 // type Links = {
@@ -236,27 +270,27 @@ export const links = [
     label: "Dashboard",
     href: "/dashboard",
     icon: (
-      <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <LayoutDashboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Profile",
     href: "/profile",
     icon: (
-      <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <User className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Settings",
     href: "/settings",
     icon: (
-      <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <Settings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Master",
     icon: (
-      <IconHierarchy className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <Network className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
     submenu: [
       {
@@ -281,7 +315,7 @@ export const links = [
     label: "Logout",
     href: "/logout",
     icon: (
-      <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <LogOut className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
 ];

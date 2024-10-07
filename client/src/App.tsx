@@ -24,7 +24,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<BaseLayout />}>
-            {/* <Route index element={<Dashboard />} /> */}
+            <Route index element={<Dashboard />} />
             <Route path="/master/driver" element={<Driver />} />
             <Route path="/master/vehicle" element={<Vehicle />} />
             <Route path="/master/customer" element={<Customer />} />
