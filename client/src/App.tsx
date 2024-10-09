@@ -20,25 +20,28 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <Provider store={store}>
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<BaseLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="/master/driver" element={<Driver />} />
-            <Route path="/master/vehicle" element={<Vehicle />} />
-            <Route path="/master/customer" element={<Customer />} />
-          </Route>
-          <Route path="auth" element={<AuthLayout />}>
-            <Route index element={<Login />} />
-            <Route path="login" element={<Login />} />
-            <Route path="forgot-password" element={<ForgetPassword />} />
-            <Route path="signup" element={<SignUpPage />} />
-          </Route>
-        </Routes>
-      </Router>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider >
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<BaseLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path='/dashboard' element={<Dashboard />} />
+              <Route path="/master/driver" element={<Driver />} />
+              <Route path="/master/vehicle" element={<Vehicle />} />
+              <Route path="/master/customer" element={<Customer />} />
+              <Route path="*" element={<h1>Not Found</h1>} />s
+            </Route>
+            <Route path="auth" element={<AuthLayout />}>
+              <Route index element={<Login />} />
+              <Route path="login" element={<Login />} />
+              <Route path="forgot-password" element={<ForgetPassword />} />
+              <Route path="signup" element={<SignUpPage />} />
+            </Route>
+
+          </Routes>
+        </Router>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider >
     </Provider>
   );
 }
