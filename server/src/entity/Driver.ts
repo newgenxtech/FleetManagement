@@ -1,10 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Common } from "./common";
 
 @Entity()
-export class Driver {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Driver extends Common {
   @Column({ type: "varchar", length: 255 })
   name: string;
 
@@ -13,8 +11,4 @@ export class Driver {
 
   @Column({ type: "varchar", length: 255 })
   address: string;
-
-  // deleted flag
-  @Column({ type: "boolean", default: false })
-  deleted: boolean;
 }

@@ -14,7 +14,7 @@ export const addDriver = apiHandlerWrapper(
       where: { contact, deleted: false },
     });
 
-    if (existingDriver.deleted) {
+    if (existingDriver && existingDriver.deleted) {
       return ApiResponse.error(
         res,
         400,
@@ -32,6 +32,9 @@ export const addDriver = apiHandlerWrapper(
     driver.name = name;
     driver.contact = contact;
     driver.address = address;
+    driver.deleted = false;
+    driver.created_at = new Date();
+    driver.updated_at = new Date();
 
     await AppDataSource.getRepository(Driver).save(driver);
 
@@ -62,6 +65,7 @@ export const editDriver = apiHandlerWrapper(
     driver.contact = contact;
     driver.address = address;
     driver.deleted = deleted;
+    driver.updated_at = new Date();
 
     await AppDataSource.getRepository(Driver).save(driver);
 
@@ -89,6 +93,8 @@ export const deleteDriver = apiHandlerWrapper(
     }
 
     driver.deleted = true;
+
+    driver.updated_at = new Date();
 
     await AppDataSource.getRepository(Driver).save(driver);
 
