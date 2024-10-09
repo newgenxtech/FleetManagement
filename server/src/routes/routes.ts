@@ -14,4 +14,7 @@ router.put("/driver", editDriver);
 router.delete("/driver/:id", deleteDriver);
 router.get("/driver", getAllDrivers);
 router.get("/driver/:id", getDriverById);
+
+
+
 export default router;
