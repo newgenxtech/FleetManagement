@@ -1,4 +1,3 @@
-import { userRepository } from "../repos/userRepository";
 import { User } from "../entity/User";
 import {
   generateAccessToken,
@@ -11,14 +10,17 @@ import * as bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { ApiResponse } from "../Utilis/ApiResponse/apiresponse";
 import { apiHandlerWrapper } from "../Utilis/Wrappers/apiWrapper";
+import { AppDataSource } from "../data-source";
 
 export const login = apiHandlerWrapper(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const user = await userRepository.findOneBy({ email });
+  const user = await AppDataSource.getRepository(User).findOne({
+    where: { email },
+  });
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new Error("Invalid email or password");
+    return ApiResponse.error(res, 401, "Invalid email or password", []);
   }
   // Generate tokens
 
@@ -49,35 +51,45 @@ export const refreshTokenGenerate = apiHandlerWrapper(
 
 export const signup = apiHandlerWrapper(async (req: Request, res: Response) => {
   const { email, password, firstName, lastName, age } = req.body;
+
   console.log("email", email);
-
-  const existingUser = await userRepository.findOneBy({ email });
-
-  if (existingUser) {
-    throw new Error("User already exists");
-  }
-
-  // Hash the password
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Create a new user
-  const newUser = new User();
-  newUser.email = email;
-  newUser.password = hashedPassword;
-  newUser.firstName = firstName;
-  newUser.lastName = lastName;
-  newUser.age = age;
-  // Save the user in the database
-  await userRepository.save(newUser);
-
-  // Generate access and refresh tokens
-  const accessToken = generateAccessToken(newUser.id, newUser.email);
-  const refreshToken = generateRefreshToken(newUser.id, newUser.email);
-  const userdetials = newUser.id;
-
-  return ApiResponse.successResponseWithData(res, "User created", {
-    accessToken,
-    refreshToken,
-    userdetials,
+  const existingUser = await AppDataSource.getRepository(User).findOne({
+    where: { email },
   });
+  console.log("existingUser", existingUser);
+  if (existingUser !== null && existingUser !== undefined) {
+    console.log("existingUser22", existingUser);
+    return ApiResponse.success(res, "User already exists");
+  } else {
+    console.log("existingUser123", existingUser);
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create a new user
+    const newUser = new User();
+    newUser.email = email;
+    newUser.password = hashedPassword;
+    newUser.firstName = firstName;
+    newUser.lastName = lastName;
+    newUser.age = age;
+    // Save the user in the database
+    console.log("existingUser222", existingUser);
+    await AppDataSource.getRepository(User).save(newUser);
+
+    // Generate access and refresh tokens
+    const accessToken = generateAccessToken(newUser.id, newUser.email);
+    const refreshToken = generateRefreshToken(newUser.id, newUser.email);
+    const userdetials = newUser;
+
+    return ApiResponse.successResponseWithData(res, "User created", {
+      accessToken,
+      refreshToken,
+      userdetials: {
+        email: newUser.email,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        age: newUser.age,
+      },
+    });
+  }
 });

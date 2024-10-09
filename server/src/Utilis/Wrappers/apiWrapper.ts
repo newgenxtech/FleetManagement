@@ -9,7 +9,7 @@ export const apiHandlerWrapper =
       await fn(req, res);
     } catch (error: any) {
       // Use ApiResponse to return error in a consistent format\
-      let statusCode = error.statusCode || 500;
+
       console.log("error", error);
       return ApiResponse.error(
         res,

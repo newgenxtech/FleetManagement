@@ -58,11 +58,7 @@ export class ApiResponse {
    * called with an instance of the `ApiResponse` class as an argument.
    */
   static error(res, statusCode, message, error) {
-    return res
-      .status(500)
-      .send(
-        new ApiResponse(statusCode, ApiResponseCode.getMessage(500), error)
-      );
+    return res.status(500).send(new ApiResponse(statusCode, message, error));
   }
 
   /**
