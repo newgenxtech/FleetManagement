@@ -79,7 +79,6 @@ export const signup = apiHandlerWrapper(async (req: Request, res: Response) => {
     // Generate access and refresh tokens
     const accessToken = generateAccessToken(newUser.id, newUser.email);
     const refreshToken = generateRefreshToken(newUser.id, newUser.email);
-    const userdetials = newUser;
 
     return ApiResponse.successResponseWithData(res, "User created", {
       accessToken,
