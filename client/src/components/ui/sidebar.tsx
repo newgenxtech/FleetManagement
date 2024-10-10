@@ -1,30 +1,45 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { NavLink,Link,LinkProps } from "react-router-dom";
+import { NavLink, Link, LinkProps } from "react-router-dom";
 
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
-
+import FleetAppIcon from "@/assets/FleetAppIcon.png";
 import {
   LayoutDashboard,
   User,
   Settings,
   Network,
-  LogOut,ChevronDown, ChevronRight,
+  ChevronDown, ChevronRight,
 } from "lucide-react";
 
-interface Links {
+
+
+export type Links = {
   label: string;
   href: string;
-  icon: React.JSX.Element | React.ReactNode;
-  submenu?: Links[];
-}
+  icon: JSX.Element;
+  submenu?: undefined;
+} | {
+  label: string;
+  icon: JSX.Element;
+  href?: string;
+  submenu: {
+    label: string;
+    href: string;
+    icon?: JSX.Element;
+    submenu?: Links[];
+  }[];
+};
+
 
 interface SidebarContextProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   animate: boolean;
+  selectedItem?: string;
+  setSelectedItem?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SidebarContext = createContext<SidebarContextProps | undefined>(
@@ -44,11 +59,15 @@ export const SidebarProvider = ({
   open: openProp,
   setOpen: setOpenProp,
   animate = true,
+  selectedItem,
+  setSelectedItem,
 }: {
   children: React.ReactNode;
   open?: boolean;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   animate?: boolean;
+  selectedItem?: string;
+  setSelectedItem?: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [openState, setOpenState] = useState(false);
 
@@ -56,7 +75,9 @@ export const SidebarProvider = ({
   const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState;
 
   return (
-    <SidebarContext.Provider value={{ open, setOpen, animate: animate }}>
+    <SidebarContext.Provider value={{
+      open, setOpen, animate: animate, selectedItem, setSelectedItem
+    }}>
       {children}
     </SidebarContext.Provider>
   );
@@ -67,14 +88,18 @@ export const Sidebar = ({
   open,
   setOpen,
   animate,
+  selectedItem,
+  setSelectedItem,
 }: {
   children: React.ReactNode;
   open?: boolean;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   animate?: boolean;
+  selectedItem?: string;
+  setSelectedItem?: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   return (
-    <SidebarProvider open={open} setOpen={setOpen} animate={animate}>
+    <SidebarProvider open={open} setOpen={setOpen} animate={animate} selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
       {children}
     </SidebarProvider>
   );
@@ -176,7 +201,7 @@ export const SidebarLink = ({
   className?: string;
   props?: LinkProps;
 }) => {
-  const { open, animate } = useSidebar();
+  const { open, animate, selectedItem, setSelectedItem } = useSidebar();
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
   const toggleSubMenu = (e: React.MouseEvent) => {
@@ -184,17 +209,29 @@ export const SidebarLink = ({
     setIsSubMenuOpen((prev) => !prev); // Toggle the submenu on arrow click
   };
 
+  useEffect(() => {
+    if (!open) {
+      setIsSubMenuOpen(false); // Close the submenu when sidebar is closed
+    } else {
+      setIsSubMenuOpen(true);
+    }
+  }, [open]);
+
+  console.log("selectedItem", selectedItem);
+
+
   return (
     <>
       <NavLink
         to={link.href || "#"}
+        onClick={() => setSelectedItem && setSelectedItem(link.label)}
         className={({ isActive }) =>
           cn(
             "flex items-center justify-start gap-4 py-2 px-3 rounded-lg transition-all duration-200",
             className,
-            isActive
-              ? "bg-blue-600 text-white border-blue-500 shadow-sm"
-              : "text-neutral-700 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-700"
+            isActive && selectedItem === link.label
+              ? `bg-gray-200 shadow` :
+              "text-neutral-700 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-700"
           )
         }
         {...props}
@@ -239,10 +276,12 @@ export const SidebarLink = ({
                 cn(
                   "flex items-center py-2 px-4 text-sm rounded-lg transition-all duration-200",
                   isActive
-                    ? "bg-blue-500 text-white shadow"
-                    : "text-neutral-600 dark:text-neutral-300 hover:bg-gray-200 dark:hover:bg-neutral-700"
+                    ? `bg-gray-200 shadow`
+                    :
+                    "text-neutral-600 dark:text-neutral-300 hover:bg-gray-200 dark:hover:bg-neutral-700"
                 )
               }
+              onClick={() => setSelectedItem && setSelectedItem(sublink.label)}
             >
               {sublink.label}
             </NavLink>
@@ -254,14 +293,6 @@ export const SidebarLink = ({
 };
 
 
-
-// Update your Links type to include the submenu
-// type Links = {
-//   label: string;
-//   href?: string;
-//   icon?: React.ReactNode;
-//   submenu?: Links[]; // Add submenu property which is an array of Links
-// };
 
 
 
@@ -311,43 +342,38 @@ export const links = [
       },
     ],
   },
-  {
-    label: "Logout",
-    href: "/logout",
-    icon: (
-      <LogOut className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-    ),
-  },
+  // {
+  //   label: "Logout",
+  //   href: "/logout",
+  //   icon: (
+  //     <LogOut className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+  //   ),
+  // },
 ];
 
 
 
-export const Logo = () => {
-  return (
-    <Link
-      to="/"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+export const Logo = () => (
+  <Link
+    to="/"
+    className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+  >
+    <img src={FleetAppIcon} className="h-10 w-10" />
+    <motion.span
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="font-medium text-black dark:text-white whitespace-pre"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="font-medium text-black dark:text-white whitespace-pre"
-      >
-        Fleet
-      </motion.span>
-    </Link>
-  );
-};
+      Fleet Management
+    </motion.span>
+  </Link>
+);
 
-
-export const LogoIcon = () => {
-  return (
-    <Link
-      to="#"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
-    >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-    </Link>
-  );
-};
+export const LogoIcon = () => (
+  <Link
+    to="#"
+    className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+  >
+    <img src={FleetAppIcon} className="h-10 w-10" />
+  </Link>
+);
