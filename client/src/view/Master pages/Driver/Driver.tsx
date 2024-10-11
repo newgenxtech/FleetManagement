@@ -2,17 +2,18 @@ import '@/styles/WarehouseListPage.css';
 import SearchComponent from "@/components/SearchComponent";
 import TableComponent from "@/components/ui/TableComponents";
 import { useDispatch, useSelector } from "react-redux";
-import { WareHouseData, WarehouseDataStoreInterface } from "@/Interfaces/interface";
+import { StoreInterface } from "@/Interfaces/interface";
 import { Link } from "react-router-dom";
 import sortIcon from "@/assets/icons8-sort-30.png";
 import { resetFilter, UpdateFilteredData, updatePagination, updateSort } from '@/services/warehouse/warehouseSlice';
 import FilterIcon from '@/assets/icons8-filter-96.png';
 import { useCallback } from 'react';
 import { trimAndConvertToNumber } from '@/utils/utils';
+import { DriverMasterData } from './Driver.Interface';
 
 
 const Driver = () => {
-    const StoreData = useSelector((state: { warehouse: WarehouseDataStoreInterface }) => state.warehouse);
+    const StoreData = useSelector((state: { warehouse: StoreInterface<DriverMasterData> }) => state.warehouse);
     const dispatch = useDispatch();
 
 
@@ -21,7 +22,7 @@ const Driver = () => {
         console.log(data);
         const searchTerm = data.toLowerCase();
 
-        const filteredData = StoreData.data.filter((row: WareHouseData) => {
+        const filteredData = StoreData.data.filter((row: DriverMasterData) => {
             return Object.values(row).some((value) => {
                 if (typeof value === 'string') {
                     return value.toLowerCase().includes(searchTerm);
@@ -106,8 +107,8 @@ const Driver = () => {
                             </div>
                         ),
                         key: 'name',
-                        render: (data: Partial<WareHouseData>) => (
-                            <Link to={`/warehouse/${data.code}`} className="link" >
+                        render: (data: Partial<DriverMasterData>) => (
+                            <Link to={`/driver/${data.name}`} className="link" >
                                 {data.name}
                             </Link>
                         ),
@@ -120,8 +121,8 @@ const Driver = () => {
                             // Warehouse-2205
 
                             const sortedData = [...StoreData.data].sort((a, b) => {
-                                const numA = trimAndConvertToNumber(a.name, 'Warehouse-', '');
-                                const numB = trimAndConvertToNumber(b.name, 'Warehouse-', '');
+                                const numA = trimAndConvertToNumber(a.name, '', '');
+                                const numB = trimAndConvertToNumber(b.name, '', '');
 
                                 if (StoreData.sortDirection === 'asc') {
                                     return numA - numB;
@@ -135,15 +136,15 @@ const Driver = () => {
                     {
                         label: 'Contact',
                         key: 'Contact',
-                        render: (data: Partial<WareHouseData>) => {
-                            return <span>{data.type}</span>;
+                        render: (data: Partial<DriverMasterData>) => {
+                            return <span>{data.contact}</span>;
                         }
                     },
                     {
                         label: 'Address',
                         key: 'Address',
-                        render: (data: Partial<WareHouseData>) => {
-                            return <span>{data.city}</span>;
+                        render: (data: Partial<DriverMasterData>) => {
+                            return <span>{data.address}</span>;
                         }
                     },
                 ]}

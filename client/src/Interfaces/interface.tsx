@@ -1,26 +1,14 @@
 import { InputField } from "@/components/FormComponent"
 
-export interface WareHouseData {
-    name : string,
-    code : string,
-    id : number
-    city: string,
-    space_available: number,
-    type : string,
-    cluster : string,
-    is_registered : boolean,
-    is_live : boolean
-    customItems: InputField[]
-}
 
-export interface WarehouseDataStoreInterface {
-    data: WareHouseData[],
-    columns:InputField[]
+export interface StoreInterface<T> {
+    data: T[],
+    columns: InputField[]
     sortDirection: "asc" | "desc",
     sortColumn: string | null,
     currentPage: number,
     rowsPerPage: number,
-    filterData: WareHouseData[]
+    filterData: T[]
     searchColumn: {
         name: string,
         code: string,

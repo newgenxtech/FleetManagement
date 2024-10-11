@@ -11,7 +11,7 @@ import BaseLayout from "./layouts/BaseLayout";
 import Login from "./view/login/Login";
 import ForgetPassword from "./components/ForgotPassword";
 import SignUpPage from "./view/signup/page";
-import Driver from "./view/Master pages/Driver";
+import Driver from "./view/Master pages/Driver/Driver";
 import Vehicle from "./view/Master pages/vehicle";
 import Customer from "./view/Master pages/Customer";
 

@@ -124,11 +124,15 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "h-full px-2 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[250px] flex-shrink-0 bg-white shadow-lg",
+          // "h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[250px] flex-shrink-0 shadow-lg",
+          `h-full px-4 py-4 hidden  md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[300px] flex-shrink-0
+      
+          `,
+
           className
         )}
         animate={{
-          width: animate ? (open ? "250px" : "60px") : "250px",
+          width: animate ? (open ? "250px" : "85px") : "250px",
         }}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -201,7 +205,7 @@ export const SidebarLink = ({
   className?: string;
   props?: LinkProps;
 }) => {
-  const { open, animate, selectedItem, setSelectedItem } = useSidebar();
+  const { open, animate } = useSidebar();
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
   const toggleSubMenu = (e: React.MouseEvent) => {
@@ -217,26 +221,25 @@ export const SidebarLink = ({
     }
   }, [open]);
 
-  console.log("selectedItem", selectedItem);
 
 
   return (
     <>
       <NavLink
         to={link.href || "#"}
-        onClick={() => setSelectedItem && setSelectedItem(link.label)}
         className={({ isActive }) =>
           cn(
             "flex items-center justify-start gap-4 py-2 px-3 rounded-lg transition-all duration-200",
             className,
-            isActive && selectedItem === link.label
+            isActive
               ? `bg-gray-200 shadow` :
               "text-neutral-700 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-700"
           )
         }
         {...props}
       >
-        <div className="flex items-center">
+        <div className="flex items-center
+        ">
           {link.icon}
           <motion.span
             animate={{
@@ -281,7 +284,6 @@ export const SidebarLink = ({
                     "text-neutral-600 dark:text-neutral-300 hover:bg-gray-200 dark:hover:bg-neutral-700"
                 )
               }
-              onClick={() => setSelectedItem && setSelectedItem(sublink.label)}
             >
               {sublink.label}
             </NavLink>
