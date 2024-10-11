@@ -125,8 +125,7 @@ export const DesktopSidebar = ({
       <motion.div
         className={cn(
           // "h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[250px] flex-shrink-0 shadow-lg",
-          `h-full px-4 py-4 hidden  md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[300px] flex-shrink-0
-      
+          `h-full px-4 py-4 hidden  md:flex md:flex-col bg-[#23321D] dark:bg-neutral-800 w-[300px] flex-shrink-0
           `,
 
           className
@@ -232,14 +231,15 @@ export const SidebarLink = ({
             "flex items-center justify-start gap-4 py-2 px-3 rounded-lg transition-all duration-200",
             className,
             isActive
-              ? `bg-gray-200 shadow` :
-              "text-neutral-700 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-700"
+              ? `bg-[#2F4829] text-white shadow 
+                
+              ` :
+              "text-white dark:text-neutral-200 hover:bg-[#2F4829] dark:hover:bg-neutral-700"
           )
         }
         {...props}
       >
-        <div className="flex items-center
-        ">
+        <div className="flex items-center">
           {link.icon}
           <motion.span
             animate={{
@@ -279,9 +279,9 @@ export const SidebarLink = ({
                 cn(
                   "flex items-center py-2 px-4 text-sm rounded-lg transition-all duration-200",
                   isActive
-                    ? `bg-gray-200 shadow`
+                    ? `bg-[#2F4829] text-white shadow `
                     :
-                    "text-neutral-600 dark:text-neutral-300 hover:bg-gray-200 dark:hover:bg-neutral-700"
+                    "text-white dark:text-neutral-300 hover:bg-[#2F4829] dark:hover:bg-neutral-700"
                 )
               }
             >
@@ -303,27 +303,27 @@ export const links = [
     label: "Dashboard",
     href: "/dashboard",
     icon: (
-      <LayoutDashboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <LayoutDashboard className="text-white dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Profile",
     href: "/profile",
     icon: (
-      <User className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <User className="text-white dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Settings",
     href: "/settings",
     icon: (
-      <Settings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <Settings className="text-white dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Master",
     icon: (
-      <Network className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <Network className="text-white dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
     submenu: [
       {
@@ -360,11 +360,12 @@ export const Logo = () => (
     to="/"
     className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
   >
-    <img src={FleetAppIcon} className="h-10 w-10" />
+    <img src={FleetAppIcon} className="h-11 w-11" />
     <motion.span
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="font-medium text-black dark:text-white whitespace-pre"
+      className="font-semibold text-white dark:text-black whitespace-pre text-lg
+      "
     >
       Fleet Management
     </motion.span>
@@ -376,6 +377,6 @@ export const LogoIcon = () => (
     to="#"
     className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
   >
-    <img src={FleetAppIcon} className="h-10 w-10" />
+    <img src={FleetAppIcon} className="h-11 w-11" />
   </Link>
 );

@@ -1,4 +1,3 @@
-import '@/styles/WarehouseListPage.css';
 import SearchComponent from "@/components/SearchComponent";
 import TableComponent from "@/components/ui/TableComponents";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +6,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import sortIcon from "@/assets/icons8-sort-30.png";
 import { resetFilter, UpdateFilteredData, updatePagination, updateSort } from '@/services/driver/driverSlice';
 import FilterIcon from '@/assets/icons8-filter-96.png';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { trimAndConvertToNumber } from '@/utils/utils';
 import { DriverMasterData } from './Driver.Interface';
 
@@ -17,6 +16,8 @@ const Driver = () => {
     const dispatch = useDispatch();
 
     const [searchParams, setSearchParams] = useSearchParams();
+    const [rowSelected, setRowSelected] = useState<number[]>([]);
+    console.log('rowSelected', rowSelected);
 
 
     const handleSearch = useCallback((data: string) => {
@@ -57,8 +58,41 @@ const Driver = () => {
         ));
 
     }, [StoreData.data, dispatch, setSearchParams]);
+
+    const handleSingleCheckox = useCallback((e: React.MouseEvent<HTMLInputElement, MouseEvent>, data: Partial<DriverMasterData>) => {
+        setRowSelected(
+            (prev) => {
+                if ((e.target as HTMLInputElement).checked) {
+                    return [...prev, data.id!];
+                } else {
+                    return prev.filter((id) => id !== data.id);
+                }
+            })
+    }, [])
+
+    const handleAllCheckbox = useCallback((e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+        console.log((e.target as HTMLInputElement).checked);
+        setRowSelected(
+            () => {
+                if ((e.target as HTMLInputElement).checked) {
+                    document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+                        (checkbox as HTMLInputElement).checked = true;
+
+                    });
+                    return StoreData.data.map((row) => row.id!);
+                } else {
+                    document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+                        (checkbox as HTMLInputElement).checked = false;
+                    });
+                    return [];
+                }
+            })
+    }, [StoreData.data])
+
     return (
-        <div className='warehouse'>
+        <div className='
+        
+        '>
             <div className="container">
                 <label className="label">Driver Master</label>
                 <SearchComponent
@@ -122,14 +156,36 @@ const Driver = () => {
             <TableComponent
                 columns={[
                     {
+                        label: (
+                            <input type="checkbox" onClick={handleAllCheckbox}
+                                className="border border-gray-900 rounded-md size-4"
+                            />
+                        ),
+                        key: 'checkbox',
+                        render: (data: Partial<DriverMasterData>) => {
+                            return <input
+                                type="checkbox"
+                                defaultChecked={rowSelected.includes(data.id!)}
+                                onClick={
+                                    (e) => {
+                                        handleSingleCheckox(e, data)
+                                    }
+                                }
+                                className="border border-gray-300 rounded-md size-4"
+                            />;
+                        },
+                        width: '5%'
+                    },
+                    {
                         // label: 'Name',
                         label: (
-                            <div className="sortable-icon-container">
+                            <div className="flex gap-4 justify-start items-center">
                                 <span>Name</span>
                                 <img
                                     src={sortIcon}
                                     alt="sort"
                                     className={'sortable-icon'}
+
                                 />
                             </div>
                         ),
@@ -173,17 +229,17 @@ const Driver = () => {
                         }
                     },
                     {
-                        label: 'Contact',
-                        key: 'Contact',
-                        render: (data: Partial<DriverMasterData>) => {
-                            return <span>{data.contact}</span>;
-                        }
-                    },
-                    {
                         label: 'Address',
                         key: 'Address',
                         render: (data: Partial<DriverMasterData>) => {
                             return <span>{data.address}</span>;
+                        }
+                    },
+                    {
+                        label: 'Contact',
+                        key: 'Contact',
+                        render: (data: Partial<DriverMasterData>) => {
+                            return <span>{data.contact}</span>;
                         }
                     },
                 ]}

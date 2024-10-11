@@ -12,7 +12,9 @@ const BaseLayout: React.FC = () => {
   return (
     <div className="flex h-screen w-full">
       {/* Sidebar */}
-      <Sidebar animate={true} open={open} setOpen={toggleSidebar}>
+      <Sidebar animate={true} open={open} setOpen={toggleSidebar}
+
+      >
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             <div className="ml-2">

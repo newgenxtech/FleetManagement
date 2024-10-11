@@ -6,6 +6,7 @@ interface DataCol<T> {
   render: (data: T) => React.ReactNode;
   sortable?: boolean;
   onSort?: (accessor: string) => void
+  width?: string | number
 
 }
 
@@ -54,7 +55,10 @@ const TableComponent = <T,>(props: TableComponentProps<T>) => {
                         ? header.onSort(header.key)
                         : undefined
                     }
-                    style={{ cursor: header.sortable ? "pointer" : "default" }}
+                    style={{
+                      cursor: header.sortable ? "pointer" : "default",
+                      width: header.width ? header.width : "auto"
+                    }}
                   >
                     {header.label}
                   </th>
@@ -76,88 +80,96 @@ const TableComponent = <T,>(props: TableComponentProps<T>) => {
         </table>
         {/* implement pagination */}
       </div>
-      <div
-        className="pagination"
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          marginTop: "20px",
-          gap: "10px",
-        }}
+      <footer
+        className="flex items-center justify-between py-2 px-2  border border-gray-300 rounded-b-lg"
       >
-        <div className="flex gap-1">
-          <span>{props.pagination.currentPage}</span>-<span>{totalPages}</span>
-          <span>of</span>
-          <span>{props.data.length}</span>
-          <span>items</span>
+        <div className="flex gap-2 justify-start items-center">
+          <span>Items per page</span>
+          <select
+            value={props.pagination.rowsPerPage}
+            onChange={(e) =>
+              props.setPagination({
+                currentPage: 1,
+                rowsPerPage: parseInt(e.target.value),
+              })
+            }
+            className="px-1 py-1 border border-gray-300 rounded-md"
+          >
+            {Array.from({ length: 10 }, (_, i) => i + 1).map((item, index) => (
+              <option key={index} value={item * 10}>
+                {item * 10} / page
+              </option>
+            ))}
+          </select>
         </div>
-        {/* 
+        <div
+          className="pagination"
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            // marginTop: "20px",
+            gap: "10px",
+          }}
+        >
+          <div className="flex gap-1">
+            <span>{props.pagination.currentPage}</span>-<span>{totalPages}</span>
+            <span>of</span>
+            <span>{props.data.length}</span>
+            <span>items</span>
+          </div>
+          {/* 
           // Page size dropdown 
         */}
 
-        {/* show the first 2 and last 2 in middle 3 dot's */}
-        <div className="flex gap-4">
-          <button
-            onClick={() => handlePageChange(1)}
-            disabled={props.pagination.currentPage === 1}
-          >
-            {"<<"}
-          </button>
-          <button
-            onClick={() => handlePageChange(props.pagination.currentPage - 1)}
-            disabled={props.pagination.currentPage === 1}
-          >
-            {"<"}
-          </button>
-          <button
-            onClick={() => handlePageChange(props.pagination.currentPage + 1)}
-            disabled={props.pagination.currentPage === totalPages}
-          >
-            {">"}
-          </button>
-          <button
-            onClick={() => handlePageChange(totalPages)}
-            disabled={props.pagination.currentPage === totalPages}
-          >
-            {">>"}
-          </button>
-        </div>
-        <select
-          value={props.pagination.rowsPerPage}
-          onChange={(e) =>
-            props.setPagination({
-              currentPage: 1,
-              rowsPerPage: parseInt(e.target.value),
-            })
-          }
-          className="px-2 py-1 border border-gray-300 rounded-md"
-        >
-          {Array.from({ length: 10 }, (_, i) => i + 1).map((item, index) => (
-            <option key={index} value={item * 10}>
-              {item * 10} / page
-            </option>
-          ))}
-        </select>
-        <div
-          className="flex gap-2 justify-center items-center"
-        >
-          <span>Go to</span>
-          <input
-            type="number"
-            defaultValue={props.pagination.currentPage}
-            onChange={(e) => {
-              const pageNumber = parseInt(e.target.value);
-              if (pageNumber > 0 && pageNumber <= totalPages) {
-                handlePageChange(pageNumber);
-              }
-            }}
-            className="px-2 py-1 border border-gray-300 rounded-md w-16"
-          />
-          <span>Page</span>
-        </div>
+          {/* show the first 2 and last 2 in middle 3 dot's */}
+          <div className="flex gap-4">
+            <button
+              onClick={() => handlePageChange(1)}
+              disabled={props.pagination.currentPage === 1}
+            >
+              {"<<"}
+            </button>
+            <button
+              onClick={() => handlePageChange(props.pagination.currentPage - 1)}
+              disabled={props.pagination.currentPage === 1}
+            >
+              {"<"}
+            </button>
+            <button
+              onClick={() => handlePageChange(props.pagination.currentPage + 1)}
+              disabled={props.pagination.currentPage === totalPages}
+            >
+              {">"}
+            </button>
+            <button
+              onClick={() => handlePageChange(totalPages)}
+              disabled={props.pagination.currentPage === totalPages}
+            >
+              {">>"}
+            </button>
+          </div>
 
-      </div>
+          <div
+            className="flex gap-2 justify-center items-center"
+          >
+            <span>Go to</span>
+            <input
+              type="number"
+              defaultValue={props.pagination.currentPage}
+              onChange={(e) => {
+                const pageNumber = parseInt(e.target.value);
+                if (pageNumber > 0 && pageNumber <= totalPages) {
+                  handlePageChange(pageNumber);
+                }
+              }}
+              className="px-2 py-1 border border-gray-300 rounded-md w-16"
+            />
+            <span>Page</span>
+          </div>
+
+        </div>
+      </footer>
     </>
   );
 }
