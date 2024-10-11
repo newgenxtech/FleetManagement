@@ -3,9 +3,9 @@ import SearchComponent from "@/components/SearchComponent";
 import TableComponent from "@/components/ui/TableComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { StoreInterface } from "@/Interfaces/interface";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import sortIcon from "@/assets/icons8-sort-30.png";
-import { resetFilter, UpdateFilteredData, updatePagination, updateSort } from '@/services/warehouse/warehouseSlice';
+import { resetFilter, UpdateFilteredData, updatePagination, updateSort } from '@/services/driver/driverSlice';
 import FilterIcon from '@/assets/icons8-filter-96.png';
 import { useCallback } from 'react';
 import { trimAndConvertToNumber } from '@/utils/utils';
@@ -13,33 +13,50 @@ import { DriverMasterData } from './Driver.Interface';
 
 
 const Driver = () => {
-    const StoreData = useSelector((state: { warehouse: StoreInterface<DriverMasterData> }) => state.warehouse);
+    const StoreData = useSelector((state: { driver: StoreInterface<DriverMasterData> }) => state.driver);
     const dispatch = useDispatch();
 
+    const [searchParams, setSearchParams] = useSearchParams();
 
 
     const handleSearch = useCallback((data: string) => {
         console.log(data);
+
+        console.log(data);
         const searchTerm = data.toLowerCase();
-
-        const filteredData = StoreData.data.filter((row: DriverMasterData) => {
-            return Object.values(row).some((value) => {
-                if (typeof value === 'string') {
-                    return value.toLowerCase().includes(searchTerm);
-                } else if (typeof value === 'number') {
-                    return value.toString().includes(searchTerm);
+        if (searchTerm === '') {
+            setSearchParams(
+                (prev) => {
+                    const params = new URLSearchParams(prev);
+                    params.delete('search');
+                    return params;
                 }
-                return false;
-            });
-        });
-
-        console.log(filteredData);
-        if (filteredData.length === 0) {
-            // alert('No Data Found');
-        } else {
-            dispatch(UpdateFilteredData(filteredData));
+            );
+            dispatch(UpdateFilteredData([]));
+            return;
         }
-    }, [StoreData.data, dispatch]);
+        setSearchParams(
+            (prev) => {
+                const params = new URLSearchParams(prev);
+                params.set('search', searchTerm);
+                return params;
+            }
+        );
+        //! This is Client side Search Remove while integrating with API
+        dispatch(UpdateFilteredData(
+            StoreData.data.filter((row: DriverMasterData) => {
+                return Object.values(row).some((value) => {
+                    if (typeof value === 'string') {
+                        return value.toLowerCase().includes(searchTerm);
+                    } else if (typeof value === 'number') {
+                        return value.toString().includes(searchTerm);
+                    }
+                    return false;
+                });
+            })
+        ));
+
+    }, [StoreData.data, dispatch, setSearchParams]);
     return (
         <div className='warehouse'>
             <div className="container">
@@ -65,6 +82,16 @@ const Driver = () => {
 
                                 <button
                                     onClick={() => {
+                                        setSearchParams(
+                                            (prev) => {
+                                                searchParams.delete('search');
+                                                return {
+                                                    ...prev
+                                                }
+                                            }
+                                        )
+
+
                                         dispatch(UpdateFilteredData([]));
                                         dispatch(resetFilter());
                                     }}
@@ -108,21 +135,25 @@ const Driver = () => {
                         ),
                         key: 'name',
                         render: (data: Partial<DriverMasterData>) => (
-                            <Link to={`/driver/${data.name}`} className="link" >
+                            <Link to={`${data.id}`} className="link" >
                                 {data.name}
                             </Link>
                         ),
                         sortable: true,
                         onSort: (columnKey: string) => {
+                            console.log('columnKey', columnKey);
+
+
                             dispatch(updateSort({
                                 sortColumn: columnKey,
                                 sortDirection: StoreData.sortDirection === 'asc' ? 'desc' : 'asc'
                             }));
                             // Warehouse-2205
 
+                            //! This is Client side sort Remove while integrating with API
                             const sortedData = [...StoreData.data].sort((a, b) => {
-                                const numA = trimAndConvertToNumber(a.name, '', '');
-                                const numB = trimAndConvertToNumber(b.name, '', '');
+                                const numA = trimAndConvertToNumber(a.name, 'D-', '');
+                                const numB = trimAndConvertToNumber(b.name, 'D-', '');
 
                                 if (StoreData.sortDirection === 'asc') {
                                     return numA - numB;
@@ -131,6 +162,14 @@ const Driver = () => {
                                 }
                             });
                             dispatch(UpdateFilteredData(sortedData));
+                            setSearchParams(
+                                (prev) => {
+                                    const params = new URLSearchParams(prev);
+                                    params.set('sort', columnKey);
+                                    params.set('order', StoreData.sortDirection === 'asc' ? 'desc' : 'asc');
+                                    return params;
+                                }
+                            );
                         }
                     },
                     {
@@ -159,6 +198,14 @@ const Driver = () => {
                 }
                 setPagination={
                     (data: { currentPage: number, rowsPerPage: number }) => {
+                        setSearchParams(
+                            (prev) => {
+                                const params = new URLSearchParams(prev);
+                                params.set('page', data.currentPage.toString());
+                                params.set('limit', data.rowsPerPage.toString());
+                                return params;
+                            }
+                        );
                         dispatch(updatePagination(data));
                     }
                 }

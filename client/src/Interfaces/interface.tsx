@@ -9,15 +9,8 @@ export interface StoreInterface<T> {
     currentPage: number,
     rowsPerPage: number,
     filterData: T[]
-    searchColumn: {
-        name: string,
-        code: string,
-        city: string,
-        space_available: string,
-        type: string,
-        cluster: string,
-        is_registered: string,
-        is_live: string,
+    searchColumn?: T | {
         customItems: InputField[]
     }
+
 }
