@@ -5,7 +5,7 @@
 
 
 :root {
-  --background: #EEEDE6;
+  --background: #EFEDE7;
   --foreground: #171717;
   
 }
@@ -32,7 +32,7 @@ body {
 
 @layer base {
   :root {
-    --background: #EEEDE6
+    --background: #FFFFFF;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;

@@ -5,7 +5,7 @@ import { NavLink, Link, LinkProps } from "react-router-dom";
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
-import FleetAppIcon from "@/assets/FleetAppIcon.png";
+import FleetAppIcon from "@/assets/Fleet Management Logo.png";
 import {
   LayoutDashboard,
   User,
@@ -17,7 +17,7 @@ import {
 
 
 export type Links = {
-  label: string;
+  label: string | React.ReactNode;
   href: string;
   icon: JSX.Element;
   submenu?: undefined;
@@ -125,13 +125,13 @@ export const DesktopSidebar = ({
       <motion.div
         className={cn(
           // "h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[250px] flex-shrink-0 shadow-lg",
-          `h-full px-4 py-4 hidden  md:flex md:flex-col bg-[#23321D] dark:bg-neutral-800 w-[300px] flex-shrink-0
+          `h-full px-2 py-4 hidden  md:flex md:flex-col bg-[#23321D] dark:bg-neutral-800 w-[300px] flex-shrink-0
           `,
 
           className
         )}
         animate={{
-          width: animate ? (open ? "250px" : "85px") : "250px",
+          width: animate ? (open ? "250px" : "60px") : "250px",
         }}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -228,7 +228,7 @@ export const SidebarLink = ({
         to={link.href || "#"}
         className={({ isActive }) =>
           cn(
-            "flex items-center justify-start gap-4 py-2 px-3 rounded-lg transition-all duration-200",
+            "flex items-center justify-start gap-4 py-2 px-2 rounded-lg transition-all duration-200",
             className,
             isActive
               ? `bg-[#2F4829] text-white shadow 

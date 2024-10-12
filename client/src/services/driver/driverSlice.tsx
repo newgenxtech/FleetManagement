@@ -11,10 +11,7 @@ const createData = () => {
     for (let i = 0; i < 50; i++) {
         data.push({
             id: i + 1,
-            name: `D-${faker.number.int({
-                min: 1,
-                max: 100
-            })}`,
+            name: `${faker.name.firstName()} ${faker.name.lastName()}`,
             address: faker.location.streetAddress(),
             contact: faker.phone.number()
         });

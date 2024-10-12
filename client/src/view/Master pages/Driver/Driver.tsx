@@ -191,7 +191,9 @@ const Driver = () => {
                         ),
                         key: 'name',
                         render: (data: Partial<DriverMasterData>) => (
-                            <Link to={`${data.id}`} className="link" >
+                            <Link to={`${data.id}`} className="link" state={{
+                                isEdit: true
+                            }} >
                                 {data.name}
                             </Link>
                         ),

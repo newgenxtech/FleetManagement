@@ -14,6 +14,7 @@ import SignUpPage from "./view/signup/page";
 import Driver from "./view/Master pages/Driver/Driver";
 import Vehicle from "./view/Master pages/vehicle";
 import Customer from "./view/Master pages/Customer";
+import DriverDetails from "./view/Master pages/Driver/DriverDetails";
 
 const queryClient = new QueryClient();
 const routes = createBrowserRouter([
@@ -34,7 +35,16 @@ const routes = createBrowserRouter([
         children: [
           {
             path: "driver",
-            element: <Driver />,
+            children: [
+              {
+                index: true,
+                element: <Driver />
+              },
+              {
+                path: ":id",
+                element: <DriverDetails />,
+              }
+            ]
           },
           {
             path: "vehicle",
