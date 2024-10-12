@@ -1,75 +1,91 @@
-import { Link, useLocation, useParams } from "react-router-dom";
+import { SquareChevronLeft } from "lucide-react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import DriverForm, { CustomField } from "@/components/FormComponentV2";
+import { z } from "zod";
 
 const DriverDetails = () => {
 
     const { id } = useParams();
 
     const location = useLocation();
+    const navigate = useNavigate();
 
     const isEdit = location.state?.isEdit;
 
     console.log('id', id);
     console.log('isEdit', isEdit);
 
+    const formFields: CustomField[] = [
+        {
+            name: 'name',
+            label: 'Name',
+            type: 'text',
+            isInputProps: { 
+                placeholder: "Please Enter Driver's Name",
+            },
+            validation: {
+                required: true,
+                pattern: z.string().min(1, 'Name is required')
+            }
+        },
+        {
+            name: 'address',
+            label: 'Address',
+            type: 'text',
+            isInputProps: { placeholder: "Please Enter Driver's Address" },
+            validation: {
+                required: true,
+                pattern: z.string().min(1, 'Address is required')
+            }
+        },
+        {
+            name: 'contact',
+            label: 'Contact',
+            type: 'text',
+            isInputProps: { placeholder: "Please Enter Driver's Contact" },
+            validation: {
+                required: true,
+                pattern: z.string().min(1, 'Contact is required')
+            }
+        },
+        {
+            label: 'Email',
+            name: 'email',
+            type: 'email',
+            isInputProps: { placeholder: "Please Enter Driver's Email" },
+            validation: {
+                required: true,
+                pattern: z.string().email('Invalid email')
+            }
+        }
+        // { name: 'username', label: 'Username', type: 'text', validation: z.string().min(1, 'Username is required') },
+        // { name: 'email', label: 'Email', type: 'email', validation: z.string().email('Invalid email') },
+        // { name: 'password', label: 'Password', type: 'password', validation: z.string().min(6, 'Password must be at least 6 characters') },
+        // { name: 'role', label: 'Role', type: 'select', options: ['User', 'Admin'] },
+    ];
+
+    const handleFormSubmit = (data: unknown) => {
+        console.log('Form Data:', data);
+    };
+
 
     return (
         <div className="flex flex-col gap-6">
             <button
-                className="flex items-center gap-1 border border-gray-300 p-2 rounded-md text-gray-500"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 transform rotate-180"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                    />
-                </svg>
-                <Link to={{
-                    pathname: '/master/driver',
-                }}>Drivers</Link>
-            </button>
-            <h3>
-                {isEdit ? 'Edit' : 'Add'} Driver</h3>
-            <hr />
-            <form
-                className="flex flex-col gap-4"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    console.log('submit');
+                className="flex items-center gap-1 border border-gray-300 p-2 rounded-md text-gray-500 w-24"
+                onClick={() => {
+                    navigate(-1);
                 }}
             >
-                <div className="flex flex-col">
-                    <span>Name</span>
-                    <input type="text" placeholder="Please Enter Driver's Name"
-                        className="border border-gray-300 p-2 rounded-md"
-                    />
-                </div>
-                <div className="flex flex-col">
-                    <span>Address</span>
-                    <input type="text" placeholder="Please Enter Driver's Address"
-                        className="border border-gray-300 p-2 rounded-md"
-                    />
-                </div>
-                <div className="flex flex-col">
-                    <span>Contact</span>
-                    <input type="text" placeholder="Please Enter Driver's Contact"
-                        className="border border-gray-300 p-2 rounded-md"
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="bg-[#2F4829] text-white p-2 rounded-md w-20"
-                >
-                    Add
-                </button>
-            </form>
+                <SquareChevronLeft
+                    className="h-4 w-4"
+                />
+                <span>Drivers</span>
+            </button>
+            <h3 className="font-bold text-xl">
+                {isEdit ? 'Edit' : 'Add'} Driver</h3>
+            <hr />
+            <DriverForm fields={formFields} onSubmit={handleFormSubmit} />
         </div>
     )
 }

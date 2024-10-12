@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import '@/styles/FormComponent.css';
 import {
     Dialog,
     DialogContent,
@@ -7,8 +6,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/DialogComponent";
+} from "./DialogComponent";
 import CustomFormComponent from './CustomFormComponent';
+import { SquareCheck } from 'lucide-react';
 
 
 interface ValidationRule {
@@ -18,6 +18,8 @@ interface ValidationRule {
     pattern?: RegExp;
     custom?: (value: string) => string | null; // Custom validation returns error message or null
 }
+
+
 
 export interface InputField {
     name: string;
@@ -75,22 +77,19 @@ const renderField = (field: InputField, formValues: { [x: string]: unknown; }, h
                     type={field.type}
                     name={field.name}
                     placeholder={field.placeholder}
-                    value={String(formValues[field.name]) || ''}
+                    value={String(formValues[field.name]) || ""}
                     onChange={(e) => handleChange(e, field.type)}
-                    className={`form-input ${errors[field.name] ? 'input-error' : ''}`}
                     defaultChecked={formValues[field.name] as unknown as boolean}
-                    style={{
-                        padding: '0.75rem',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                        fontSize: '1rem',
-                        backgroundColor: '#fff',
-                        color: '#333',
-                        outline: 'none',
-                        borderColor: errors[field.name] ? '#e74c3c' : '#ccc',
-                        width: ['checkbox', 'radio'].includes(field.type) ? '100%' : '',
-                        height: ['checkbox', 'radio'].includes(field.type) ? '1rem' : '',
-                    }}
+                    className={`form-input ${errors[field.name] ? "border-red-500" : "border-gray-300"}
+                     p-2
+                     border
+                      rounded-md text-base
+                       bg-white
+                        text-gray-800 
+                        outline-none ${["checkbox", "radio"].includes(field.type)
+                            ? "w-full h-4"
+                            : ""
+                        }`}
                 />
             );
     }
@@ -133,15 +132,21 @@ const FormComponent = <T,>({ fields, onSubmit, initialValues, setFields }: FormP
 
     return (
         <>
-            <div className="card-content">
-                <form className="form-grid" onSubmit={handleSubmit}>
+            <div className="">
+                <form
+                    className="flex flex-col gap-4 w-1/2"
+                    onSubmit={handleSubmit}
+
+                >
                     {fields.map((field) => (
-                        <div key={field.name} className="form-group">
-                            <label htmlFor={field.name} className="form-label">
+                        <div key={field.name} className="flex flex-col gap-1">
+                            <label htmlFor={field.name} className="text-sm">
                                 {field.label}
                             </label>
                             {renderField(field, formValues, handleChange, errors)}
-                            {errors[field.name] && <span className="error-message">{errors[field.name]}</span>}
+                            {errors[field.name] && <span className="
+                            text-red-500
+                            ">{errors[field.name]}</span>}
                         </div>
                     ))}
 
@@ -195,9 +200,19 @@ const FormComponent = <T,>({ fields, onSubmit, initialValues, setFields }: FormP
                         </DialogContent>
                     </Dialog>
                 </form>
-                <div className="card-footer">
+                {/* <div className="card-footer">
                     <button onClick={handleSubmit} className="submit-button">Submit</button>
-                </div>
+                </div> */}
+                <button
+                    type="submit"
+                    className="bg-[#2F4829] text-white px-2 py-2 rounded-md w-24 flex items-center justify-center gap-2"
+                    onClick={handleSubmit}
+                >
+                    <SquareCheck
+                        className="h-4 w-4"
+                    />
+                    Add
+                </button>
             </div>
         </>
     );

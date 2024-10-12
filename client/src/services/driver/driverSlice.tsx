@@ -11,7 +11,7 @@ const createData = () => {
     for (let i = 0; i < 50; i++) {
         data.push({
             id: i + 1,
-            name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+            name: `${faker.person.firstName()} ${faker.person.lastName()}`,
             address: faker.location.streetAddress(),
             contact: faker.phone.number()
         });

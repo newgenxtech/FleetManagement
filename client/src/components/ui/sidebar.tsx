@@ -124,19 +124,17 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          // "h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[250px] flex-shrink-0 shadow-lg",
-          `h-full px-2 py-4 hidden  md:flex md:flex-col bg-[#23321D] dark:bg-neutral-800 w-[300px] flex-shrink-0
-          `,
-
+          `h-full px-2 py-4 hidden md:flex md:flex-col bg-[#23321D] dark:bg-neutral-800 w-[300px] flex-shrink-0`,
           className
         )}
         animate={{
-          width: animate ? (open ? "250px" : "60px") : "250px",
+          width: animate ? (open ? "240px" : "60px") : "240",
         }}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
         {...props}
       >
+        {/* set a tiny button on the right side of the sidebar */}
         {children}
       </motion.div>
     </>
@@ -334,10 +332,10 @@ export const links = [
         label: "Driver",
         href: "/master/driver",
       },
-      {
-        label: "Customers",
-        href: "/master/customer",
-      },
+      // {
+      //   label: "Customers",
+      //   href: "/master/customer",
+      // },
       {
         label: "Procurement",
         href: "/master/procurement",

@@ -2,6 +2,8 @@ import React, { useState, useCallback, useMemo } from "react";
 import { LogoIcon, Sidebar, SidebarBody, SidebarLink, links, Logo } from "../components/ui/sidebar";
 import { Outlet, useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
+import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { BreadcrumbResponsive } from "@/components/BreadCrumbComponent";
 
 interface UserProfileProps {
   handleLogout: () => void;
@@ -60,6 +62,7 @@ const UserProfile: React.FC<UserProfileProps> = React.memo((
 const BaseLayout: React.FC = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const [animationParent] = useAutoAnimate()
 
   const toggleSidebar = useCallback(() => {
     setOpen(prevOpen => !prevOpen);
@@ -96,7 +99,8 @@ const BaseLayout: React.FC = () => {
       </Sidebar>
 
       {/* Main content */}
-      <div className="flex-1 p-4 bg-gray-50 dark:bg-gray-900 w-100 h-full overflow-y-auto overflow-x-hidden">
+      <div className="flex-1 p-4 bg-gray-50 dark:bg-gray-900 w-100 h-full overflow-y-auto overflow-x-hidden" ref={animationParent}>
+        <BreadcrumbResponsive />
         <Outlet /> {/* Render the child routes here */}
       </div>
     </div>

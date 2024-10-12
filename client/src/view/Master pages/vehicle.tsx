@@ -2,17 +2,18 @@ import '@/styles/WarehouseListPage.css';
 import SearchComponent from "@/components/SearchComponent";
 import TableComponent from "@/components/ui/TableComponents";
 import { useDispatch, useSelector } from "react-redux";
-import { WareHouseData, WarehouseDataStoreInterface } from "@/Interfaces/interface";
 import { Link } from "react-router-dom";
 import sortIcon from "@/assets/icons8-sort-30.png";
-import { resetFilter, UpdateFilteredData, updatePagination, updateSort } from '@/services/warehouse/warehouseSlice';
+import { resetFilter, UpdateFilteredData, updatePagination, updateSort } from '@/services/driver/driverSlice';
 import FilterIcon from '@/assets/icons8-filter-96.png';
 import { useCallback } from 'react';
 import { trimAndConvertToNumber } from '@/utils/utils';
+import { DriverMasterData } from './Driver/Driver.Interface';
+import { StoreInterface } from '@/Interfaces/interface';
 
 
 const Vehicle = () => {
-    const StoreData = useSelector((state: { warehouse: WarehouseDataStoreInterface }) => state.warehouse);
+    const StoreData = useSelector((state: { driver: StoreInterface<DriverMasterData> }) => state.driver);
     const dispatch = useDispatch();
 
 
@@ -21,7 +22,7 @@ const Vehicle = () => {
         console.log(data);
         const searchTerm = data.toLowerCase();
 
-        const filteredData = StoreData.data.filter((row: WareHouseData) => {
+        const filteredData = StoreData.data.filter((row: DriverMasterData) => {
             return Object.values(row).some((value) => {
                 if (typeof value === 'string') {
                     return value.toLowerCase().includes(searchTerm);
@@ -106,7 +107,7 @@ const Vehicle = () => {
                             </div>
                         ),
                         key: 'name',
-                        render: (data: Partial<WareHouseData>) => (
+                        render: (data: Partial<DriverMasterData>) => (
                             <Link to={`/warehouse/${data.code}`} className="link" >
                                 {data.name}
                             </Link>
@@ -145,7 +146,7 @@ const Vehicle = () => {
                             </div>
                         ),
                         key: 'name',
-                        render: (data: Partial<WareHouseData>) => (
+                        render: (data: Partial<DriverMasterData>) => (
                             <Link to={`/warehouse/${data.code}`} className="link" >
                                 {data.name}
                             </Link>
@@ -184,7 +185,7 @@ const Vehicle = () => {
                             </div>
                         ),
                         key: 'name',
-                        render: (data: Partial<WareHouseData>) => (
+                        render: (data: Partial<DriverMasterData>) => (
                             <Link to={`/warehouse/${data.code}`} className="link" >
                                 {data.name}
                             </Link>
@@ -223,7 +224,7 @@ const Vehicle = () => {
                             </div>
                         ),
                         key: 'name',
-                        render: (data: Partial<WareHouseData>) => (
+                        render: (data: Partial<DriverMasterData>) => (
                             <Link to={`/warehouse/${data.code}`} className="link" >
                                 {data.name}
                             </Link>
