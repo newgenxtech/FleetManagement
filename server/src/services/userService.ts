@@ -26,11 +26,20 @@ export const login = apiHandlerWrapper(async (req: Request, res: Response) => {
 
   const accessToken = generateAccessToken(user.id, user.email);
   const refreshToken = generateRefreshToken(user.id, user.email);
-  const userdetials = user.id;
-  return ApiResponse.successResponseWithData(res, "Login Successful", {
+  // i need to set cookie here
+  res.setHeader("Set-Cookie", `refreshToken=${refreshToken}; HttpOnly`);
+  // set access token in header
+  res.setHeader("Authorization", `Bearer ${accessToken}`);
+
+  return ApiResponse.successResponseWithData(res, "User logged in", {
     accessToken,
     refreshToken,
-    userdetials,
+    userdetials: {
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      age: user.age,
+    },
   });
 });
 // Store refreshToken in the database or in-memory storage (optional)
