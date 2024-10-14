@@ -13,8 +13,8 @@ import ForgetPassword from "./components/ForgotPassword";
 import SignUpPage from "./view/signup/page";
 import Driver from "./view/Master pages/Driver/Driver";
 import Vehicle from "./view/Master pages/Vehicle/vehicle";
-import Customer from "./view/Master pages/Customer/Customer";
 import DriverDetails from "./view/Master pages/Driver/DriverDetails";
+import VehicleDetails from "./view/Master pages/Vehicle/VehicleDetails";
 
 const queryClient = new QueryClient();
 const routes = createBrowserRouter([
@@ -48,11 +48,16 @@ const routes = createBrowserRouter([
           },
           {
             path: "vehicle",
-            element: <Vehicle />,
-          },
-          {
-            path: "customer",
-            element: <Customer />,
+            children: [
+              {
+                index: true,
+                element: <Vehicle />
+              },
+              {
+                path: ":id",
+                element: <VehicleDetails />,
+              }
+            ]
           }
         ]
       },

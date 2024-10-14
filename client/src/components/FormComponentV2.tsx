@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SquareCheck } from 'lucide-react';
 
-type FieldType = 'text' | 'email' | 'number' | 'password' | 'checkbox' | 'select' | 'textarea' | 'radio';
+type FieldType = 'text' | 'email' | 'number' | 'password' | 'checkbox' | 'select' | 'textarea' | 'radio' | 'date';
 
 export interface CustomField {
     name: string;
@@ -54,6 +54,8 @@ const ReusableForm: React.FC<ReusableFormProps> = ({ fields, onSubmit }) => {
                 return field?.isInputProps?.defaultChecked ?? false;
             case 'select':
                 return field?.isInputProps?.defaultSelected ?? '';
+            case 'date':
+                return field?.isInputProps?.defaultValue ?? new Date().toISOString();
             default:
                 return '';
         }
@@ -133,6 +135,15 @@ const ReusableForm: React.FC<ReusableFormProps> = ({ fields, onSubmit }) => {
                         {...register(field.name)}
                         placeholder={field.label}
                         className='p-2 border rounded-md text-base bg-whitetext-gray-800'
+                    />
+                );
+            case 'date':
+                return (
+                    <input
+                        type={field.type}
+                        {...register(field.name)}
+                        placeholder={field?.isInputProps?.placeholder}
+                        className={` p-2 border rounded-md text-base bg-whitetext-gray-800 `}
                     />
                 );
             default:
