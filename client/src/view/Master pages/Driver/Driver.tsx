@@ -7,7 +7,7 @@ import sortIcon from "@/assets/icons8-sort-30.png";
 import { resetFilter, UpdateFilteredData, updatePagination, updateSort } from '@/services/driver/driverSlice';
 import FilterIcon from '@/assets/icons8-filter-96.png';
 import { useCallback, useState } from 'react';
-import { trimAndConvertToNumber } from '@/utils/utils';
+// import { trimAndConvertToNumber } from '@/utils/utils';
 import { DriverMasterData } from './Driver.Interface';
 
 
@@ -210,13 +210,11 @@ const Driver = () => {
 
                             //! This is Client side sort Remove while integrating with API
                             const sortedData = [...StoreData.data].sort((a, b) => {
-                                const numA = trimAndConvertToNumber(a.name, 'D-', '');
-                                const numB = trimAndConvertToNumber(b.name, 'D-', '');
 
                                 if (StoreData.sortDirection === 'asc') {
-                                    return numA - numB;
+                                    return a.name.localeCompare(b.name);
                                 } else {
-                                    return numB - numA;
+                                    return b.name.localeCompare(a.name);
                                 }
                             });
                             dispatch(UpdateFilteredData(sortedData));

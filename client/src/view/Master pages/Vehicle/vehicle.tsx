@@ -2,27 +2,29 @@ import '@/styles/WarehouseListPage.css';
 import SearchComponent from "@/components/SearchComponent";
 import TableComponent from "@/components/ui/TableComponents";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import sortIcon from "@/assets/icons8-sort-30.png";
-import { resetFilter, UpdateFilteredData, updatePagination, updateSort } from '@/services/driver/driverSlice';
+import { resetFilter, UpdateFilteredData, updatePagination, updateSort } from '@/services/Vehicle/vehicleSlice';
 import FilterIcon from '@/assets/icons8-filter-96.png';
 import { useCallback } from 'react';
 import { trimAndConvertToNumber } from '@/utils/utils';
-import { DriverMasterData } from './Driver/Driver.Interface';
+import { VehicleMasterData } from '@/view/Master pages/Vehicle/Vehicle.Interface';
 import { StoreInterface } from '@/Interfaces/interface';
+import { getDDMMYYYY } from '@/lib/utils';
 
 
 const Vehicle = () => {
-    const StoreData = useSelector((state: { driver: StoreInterface<DriverMasterData> }) => state.driver);
+    const StoreData = useSelector((state: { vehicle: StoreInterface<VehicleMasterData> }) => state.vehicle);
     const dispatch = useDispatch();
 
-
+    const [searchParams, setSearchParams] = useSearchParams();
+    // const [rowSelected, setRowSelected] = useState<number[]>([]);
 
     const handleSearch = useCallback((data: string) => {
         console.log(data);
         const searchTerm = data.toLowerCase();
 
-        const filteredData = StoreData.data.filter((row: DriverMasterData) => {
+        const filteredData = StoreData.data.filter((row: VehicleMasterData) => {
             return Object.values(row).some((value) => {
                 if (typeof value === 'string') {
                     return value.toLowerCase().includes(searchTerm);
@@ -65,6 +67,15 @@ const Vehicle = () => {
 
                                 <button
                                     onClick={() => {
+                                        setSearchParams(
+                                            (prev) => {
+                                                searchParams.delete('search');
+                                                return {
+                                                    ...prev
+                                                }
+                                            }
+                                        )
+
                                         dispatch(UpdateFilteredData([]));
                                         dispatch(resetFilter());
                                     }}
@@ -98,7 +109,7 @@ const Vehicle = () => {
                         // label: 'Name',
                         label: (
                             <div className="sortable-icon-container">
-                                <span>Vehicle Name</span>
+                                <span>Vehicle Number</span>
                                 <img
                                     src={sortIcon}
                                     alt="sort"
@@ -106,10 +117,10 @@ const Vehicle = () => {
                                 />
                             </div>
                         ),
-                        key: 'name',
-                        render: (data: Partial<DriverMasterData>) => (
-                            <Link to={`/warehouse/${data.code}`} className="link" >
-                                {data.name}
+                        key: 'vehicle_number',
+                        render: (data: Partial<VehicleMasterData>) => (
+                            <Link to={`${data.id}`} className="link" >
+                                {data.vehicle_number}
                             </Link>
                         ),
                         sortable: true,
@@ -121,8 +132,8 @@ const Vehicle = () => {
                             // Warehouse-2205
 
                             const sortedData = [...StoreData.data].sort((a, b) => {
-                                const numA = trimAndConvertToNumber(a.name, 'Warehouse-', '');
-                                const numB = trimAndConvertToNumber(b.name, 'Warehouse-', '');
+                                const numA = trimAndConvertToNumber(a.vehicle_number, 'Warehouse-', '');
+                                const numB = trimAndConvertToNumber(b.vehicle_number, 'Warehouse-', '');
 
                                 if (StoreData.sortDirection === 'asc') {
                                     return numA - numB;
@@ -134,46 +145,18 @@ const Vehicle = () => {
                         }
                     },
                     {
-                        // label: 'Name',
                         label: (
                             <div className="sortable-icon-container">
                                 <span>Vehicle Type</span>
-                                <img
-                                    src={sortIcon}
-                                    alt="sort"
-                                    className={'sortable-icon'}
-                                />
                             </div>
                         ),
-                        key: 'name',
-                        render: (data: Partial<DriverMasterData>) => (
-                            <Link to={`/warehouse/${data.code}`} className="link" >
-                                {data.name}
-                            </Link>
+                        key: 'vehicle_type',
+                        render: (data: Partial<VehicleMasterData>) => (
+                            <span>{data.vehicle_type}</span>
                         ),
-                        sortable: true,
-                        onSort: (columnKey: string) => {
-                            dispatch(updateSort({
-                                sortColumn: columnKey,
-                                sortDirection: StoreData.sortDirection === 'asc' ? 'desc' : 'asc'
-                            }));
-                            // Warehouse-2205
-
-                            const sortedData = [...StoreData.data].sort((a, b) => {
-                                const numA = trimAndConvertToNumber(a.name, 'Warehouse-', '');
-                                const numB = trimAndConvertToNumber(b.name, 'Warehouse-', '');
-
-                                if (StoreData.sortDirection === 'asc') {
-                                    return numA - numB;
-                                } else {
-                                    return numB - numA;
-                                }
-                            });
-                            dispatch(UpdateFilteredData(sortedData));
-                        }
                     },
                     {
-                        // label: 'Name',
+
                         label: (
                             <div className="sortable-icon-container">
                                 <span>Vehicle Number</span>
@@ -184,35 +167,12 @@ const Vehicle = () => {
                                 />
                             </div>
                         ),
-                        key: 'name',
-                        render: (data: Partial<DriverMasterData>) => (
-                            <Link to={`/warehouse/${data.code}`} className="link" >
-                                {data.name}
-                            </Link>
-                        ),
-                        sortable: true,
-                        onSort: (columnKey: string) => {
-                            dispatch(updateSort({
-                                sortColumn: columnKey,
-                                sortDirection: StoreData.sortDirection === 'asc' ? 'desc' : 'asc'
-                            }));
-                            // Warehouse-2205
-
-                            const sortedData = [...StoreData.data].sort((a, b) => {
-                                const numA = trimAndConvertToNumber(a.name, 'Warehouse-', '');
-                                const numB = trimAndConvertToNumber(b.name, 'Warehouse-', '');
-
-                                if (StoreData.sortDirection === 'asc') {
-                                    return numA - numB;
-                                } else {
-                                    return numB - numA;
-                                }
-                            });
-                            dispatch(UpdateFilteredData(sortedData));
-                        }
+                        key: 'vehicle_number',
+                        render: (data: Partial<VehicleMasterData>) => (
+                            <span>{data.vehicle_number}</span>
+                        )
                     },
                     {
-                        // label: 'Name',
                         label: (
                             <div className="sortable-icon-container">
                                 <span>Chassis Number</span>
@@ -223,47 +183,107 @@ const Vehicle = () => {
                                 />
                             </div>
                         ),
-                        key: 'name',
-                        render: (data: Partial<DriverMasterData>) => (
-                            <Link to={`/warehouse/${data.code}`} className="link" >
-                                {data.name}
-                            </Link>
-                        ),
-                        sortable: true,
-                        onSort: (columnKey: string) => {
-                            dispatch(updateSort({
-                                sortColumn: columnKey,
-                                sortDirection: StoreData.sortDirection === 'asc' ? 'desc' : 'asc'
-                            }));
-                            // Warehouse-2205
-
-                            const sortedData = [...StoreData.data].sort((a, b) => {
-                                const numA = trimAndConvertToNumber(a.name, 'Warehouse-', '');
-                                const numB = trimAndConvertToNumber(b.name, 'Warehouse-', '');
-
-                                if (StoreData.sortDirection === 'asc') {
-                                    return numA - numB;
-                                } else {
-                                    return numB - numA;
-                                }
-                            });
-                            dispatch(UpdateFilteredData(sortedData));
-                        }
+                        key: 'chassis_number',
+                        render: (data: Partial<VehicleMasterData>) => (
+                            <span>{data.chassis_number}</span>
+                        )
                     },
-                    // {
-                    //     label: '',
-                    //     key: 'Vehicle Type',
-                    //     render: (data: Partial<WareHouseData>) => {
-                    //         return <span>{data.type}</span>;
-                    //     }
-                    // },
-                    // {
-                    //     label: 'Address',
-                    //     key: 'Address',
-                    //     render: (data: Partial<WareHouseData>) => {
-                    //         return <span>{data.city}</span>;
-                    //     }
-                    // },
+                    {
+                        label: (
+                            <div className="sortable-icon-container">
+                                <span>Chassis</span>
+                                <img
+                                    src={sortIcon}
+                                    alt="sort"
+                                    className={'sortable-icon'}
+                                />
+                            </div>
+                        ),
+                        key: 'chassis',
+                        render: (data: Partial<VehicleMasterData>) => (
+                            <span>{data.chassis}</span>
+                        )
+                    },
+                    {
+                        label: (
+                            <div className="sortable-icon-container">
+                                <span>No of Tyres</span>
+                                <img
+                                    src={sortIcon}
+                                    alt="sort"
+                                    className={'sortable-icon'}
+                                />
+                            </div>
+                        ),
+                        key: 'no_of_tyres',
+                        render: (data: Partial<VehicleMasterData>) => (
+                            <span>{data.no_of_tyres}</span>
+                        )
+                    },
+                    {
+                        label: (
+                            <div className="sortable-icon-container">
+                                <span>Fast Tag Id</span>
+                                <img
+                                    src={sortIcon}
+                                    alt="sort"
+                                    className={'sortable-icon'}
+                                />
+                            </div>
+                        ),
+                        key: 'fast_tag_id',
+                        render: (data: Partial<VehicleMasterData>) => (
+                            <span>{data.fast_tag_id}</span>
+                        )
+                    },
+                    {
+                        label: (
+                            <div className="sortable-icon-container">
+                                <span>Insurance Number</span>
+                                <img
+                                    src={sortIcon}
+                                    alt="sort"
+                                    className={'sortable-icon'}
+                                />
+                            </div>
+                        ),
+                        key: 'insurance_number',
+                        render: (data: Partial<VehicleMasterData>) => (
+                            <span>{data.insurance_number}</span>
+                        )
+                    },
+                    {
+                        label: (
+                            <div className="sortable-icon-container">
+                                <span>Insurance Exp Date</span>
+                                <img
+                                    src={sortIcon}
+                                    alt="sort"
+                                    className={'sortable-icon'}
+                                />
+                            </div>
+                        ),
+                        key: 'insurance_exp_date',
+                        render: (data: Partial<VehicleMasterData>) => (
+                            <span>{getDDMMYYYY(data.insurance_exp_date as Date)}</span>
+                        )
+                    },
+                    {
+                        label: (
+                            <div className="sortable-icon-container">
+                                <span>Road Tax Exp Date</span>
+                                <img
+                                    src={sortIcon}
+                                    alt="sort"
+                                    className={'sortable-icon'}
+                                />
+                            </div>
+                        ),
+                        key: 'roadta_exp_date',
+                        render: (data: Partial<VehicleMasterData>) => (
+                            <span>{getDDMMYYYY(data.roadta_exp_date as Date)}</span>
+                        )
+                    },
                 ]}
                 data={
                     StoreData.filterData.length > 0 ? StoreData.filterData : StoreData.data
@@ -276,6 +296,14 @@ const Vehicle = () => {
                 }
                 setPagination={
                     (data: { currentPage: number, rowsPerPage: number }) => {
+                        setSearchParams(
+                            (prev) => {
+                                const params = new URLSearchParams(prev);
+                                params.set('page', data.currentPage.toString());
+                                params.set('limit', data.rowsPerPage.toString());
+                                return params;
+                            }
+                        );
                         dispatch(updatePagination(data));
                     }
                 }

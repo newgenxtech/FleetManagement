@@ -12,8 +12,8 @@ import Login from "./view/login/Login";
 import ForgetPassword from "./components/ForgotPassword";
 import SignUpPage from "./view/signup/page";
 import Driver from "./view/Master pages/Driver/Driver";
-import Vehicle from "./view/Master pages/vehicle";
-import Customer from "./view/Master pages/Customer";
+import Vehicle from "./view/Master pages/Vehicle/vehicle";
+import Customer from "./view/Master pages/Customer/Customer";
 import DriverDetails from "./view/Master pages/Driver/DriverDetails";
 
 const queryClient = new QueryClient();

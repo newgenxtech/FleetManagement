@@ -1,13 +1,12 @@
 import "@/styles/TableComponent.css"
 
-interface DataCol<T> {
+type DataCol<T> = {
   label: string | React.ReactNode;
   key: string
   render: (data: T) => React.ReactNode;
   sortable?: boolean;
   onSort?: (accessor: string) => void
   width?: string | number
-
 }
 
 interface TableComponentProps<T> {
