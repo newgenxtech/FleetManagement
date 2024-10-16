@@ -1,6 +1,8 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Provider } from 'react-redux'
+import { store } from "./store/store";
 
 // Regularly imported components
 import AuthLayout from "@/layouts/AuthLayout";
@@ -9,27 +11,110 @@ import BaseLayout from "./layouts/BaseLayout";
 import Login from "./view/login/Login";
 import ForgetPassword from "./components/ForgotPassword";
 import SignUpPage from "./view/signup/page";
+import Driver from "./view/Master pages/Driver/Driver";
+import Vehicle from "./view/Master pages/Vehicle/vehicle";
+import DriverDetails from "./view/Master pages/Driver/DriverDetails";
+import VehicleDetails from "./view/Master pages/Vehicle/VehicleDetails";
 
 const queryClient = new QueryClient();
+const routes = createBrowserRouter([
+  {
+    path: "/",
+    element: <BaseLayout />,
+    children: [
+      {
+        element: <Dashboard />,
+        index: true
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "master",
+        children: [
+          {
+            path: "driver",
+            children: [
+              {
+                index: true,
+                element: <Driver />
+              },
+              {
+                path: ":id",
+                element: <DriverDetails />,
+              }
+            ]
+          },
+          {
+            path: "vehicle",
+            children: [
+              {
+                index: true,
+                element: <Vehicle />
+              },
+              {
+                path: ":id",
+                element: <VehicleDetails />,
+              }
+            ]
+          }
+        ]
+      },
+      {
+        path: "*",
+        element: <h1 className=" 
+        flex
+        justify-center
+        items-center
+        h-screen
+        text-4xl
+        font-bold
+        ">
+          There is No Such Page 🤷🏻
+        </h1>
+      }
+    ]
+  },
+  // define the routes for the auth layout
+  {
+    path: "/auth",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "signup",
+        element: <SignUpPage />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgetPassword />,
+      },
+      {
+        path: "*",
+        element: <h1 className=" flex
+        justify-center
+        items-center
+        h-screen
+        text-4xl
+        font-bold">Not Found</h1>
+      }
+    ]
+  }
+
+]);
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<BaseLayout />}>
-            <Route index element={<Dashboard />} />
-          </Route>
-          <Route path="auth" element={<AuthLayout />}>
-            <Route index element={<Login />} />
-            <Route path="login" element={<Login />} />
-            <Route path="forgot-password" element={<ForgetPassword />} />
-            <Route path="signup" element={<SignUpPage />} />
-          </Route>
-        </Routes>
-      </Router>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider >
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={routes} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider >
+    </Provider>
   );
 }
 

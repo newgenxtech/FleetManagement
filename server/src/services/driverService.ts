@@ -13,7 +13,7 @@ export const addDriver = apiHandlerWrapper(
     const existingDriver = await driverRepo.findOne({
       where: { contact, deleted: false },
     });
-
+    
     if (existingDriver && existingDriver.deleted) {
       return ApiResponse.error(
         res,
